@@ -3,28 +3,28 @@
 		{
 			"Name": "Smoothy",
 			"Position": [ 0, 0, 0 ],
-			"Rotation": [ 0, 1.5708, 0 ],
+			"Rotation": [ 0, 90, 0 ],
 			"Scale": [ 1, 1, 1 ],
 			"Model": "SmoothyModel"
 		},
 		{
 			"Name": "Chonky",
 			"Position": [ 0, 0, -10 ],
-			"Rotation": [ 0, 1.5708, 0 ],
+			"Rotation": [ 0, 90, 0 ],
 			"Scale": [ 1, 1, 1 ],
 			"Model": "ChonkyModel"
 		},
 		{
 			"Name": "Housey",
 			"Position": [ 0, 14.25, 7.5 ],
-			"Rotation": [ 0, 1.5708, 0 ],
+			"Rotation": [ 0, 90, 0 ],
 			"Scale": [ 5, 5, 10 ],
 			"Model": "HouseModel"
 		},
 		{
 			"Name": "PlaneArrid3",
 			"Position": [ 4, 0, 0 ],
-			"Rotation": [ 3.14159, 0, 0 ],
+			"Rotation": [ 180, 0, 0 ],
 			"Scale": [ 0.5, 0.5, 0.5 ],
 			"Model": "MapArridModel"
 		}
