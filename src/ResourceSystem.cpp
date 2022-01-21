@@ -392,6 +392,10 @@ void ResourceSystem::draw(VkCommandBuffer& cb, uint32_t imageIndex) {
     scene.activeLights = 0;
     scene.cameraPosition = glm::vec4(campos, 1.0f);
 
+    scene.directionalLightPower = 4.0f;
+    scene.lightDir = glm::vec4(-1.0f, -1.0f, 0.0f, 1.0f);
+    scene.lightColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
     edl::updateStorageBuffer(stagingBuffer, sceneDataBuffer, 0, &scene, 1);
 
     //TODO: Update lights

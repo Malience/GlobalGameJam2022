@@ -90,7 +90,7 @@ void init(std::string applicationName) {
 	const char** glfwExtensions = edl::GLFW::getRequiredExtensions(&glfwExtensionCount);
 
 	std::vector<const char*> layers;
-	layers.push_back("VK_LAYER_KHRONOS_validation");
+	//layers.push_back("VK_LAYER_KHRONOS_validation");
 
 	std::vector<const char*> extensions;
 	extensions.push_back(VK_KHR_SURFACE_EXTENSION_NAME);

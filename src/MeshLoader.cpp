@@ -39,7 +39,7 @@ void loadMesh(res::Toolchain& toolchain, res::Resource& res) {
     //uint32_t bitangentOffset = edl::getStorageBufferIndex(system.normalBuffer, vertexCount);
     meshres.texCoord0Offset = edl::getStorageBufferIndex(system.texCoord0Buffer, vertexCount);
 
-    meshres.indexOffset = edl::getStorageBufferIndex(system.indexBuffer, mesh->mFaces->mNumIndices);
+    meshres.indexOffset = edl::getStorageBufferIndex(system.indexBuffer, mesh->mNumFaces * 3);
 
     std::vector<glm::vec4> positions(vertexCount);
     std::vector<glm::vec4> normals(vertexCount);

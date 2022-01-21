@@ -23,7 +23,13 @@ struct DrawData {
 
 struct SceneData {
 	glm::vec4 cameraPosition;
+	glm::vec4 lightDir;
+	glm::vec4 lightColor;
+
+	float directionalLightPower;
 	uint32_t activeLights;
+	int pad0;
+	int pad1;
 };
 
 struct PBRMaterial {

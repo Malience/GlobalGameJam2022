@@ -1,0 +1,80 @@
+{
+	"Objects": [
+		{
+			"Name": "Smoothy",
+			"Position": [ 0, 0, 10 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Model": "SmoothyModel"
+		},
+		{
+			"Name": "Chonky",
+			"Position": [ 0, 0, 0 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Model": "ChonkyModel"
+		},
+		{
+			"Name": "Housey",
+			"Position": [ 4, 0, 0 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Model": "HouseModel"
+		}
+	],
+	
+	"Models": [
+		{
+			"Name": "SmoothyModel",
+			"Mesh": "SmoothyMesh",
+			"Material": "CubeMaterial"
+		},
+		{
+			"Name": "ChonkyModel",
+			"Mesh": "ChonkyMesh",
+			"Material": "CubeMaterial"
+		},
+		{
+			"Name": "HouseModel",
+			"Mesh": "HouseMesh",
+			"Material": "CubeMaterial"
+		}
+	],
+	
+	"Materials": [
+		{
+			"Name": "CubeMaterial",
+			
+			"Tint": [ 0, 0, 0, 0 ],
+			"Metallic": 0,
+			"Roughness": 0,
+			"AO": 10.0,
+			
+			"AlbedoTexture": "CubeTexture",
+			"NormalTexture": ""
+		}
+	],
+	
+	"Load": [
+		{
+			"Name": "SmoothyMesh",
+			"Type": "mesh",
+			"Filename": "models/Smoothy.obj"
+		},
+		{
+			"Name": "ChonkyMesh",
+			"Type": "mesh",
+			"Filename": "models/Chonky.obj"
+		},
+		{
+			"Name": "HouseMesh",
+			"Type": "mesh",
+			"Filename": "models/house_001.obj"
+		},
+		{
+			"Name": "CubeTexture",
+			"Type": "img",
+			"Filename": "textures/wall.jpg"
+		}
+	]
+}

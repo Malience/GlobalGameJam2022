@@ -15,7 +15,14 @@ layout(location = 0) out vec4 fragColor;
 
 struct SceneData {
 	vec4 cameraPosition;
+	
+	vec4 lightDir;
+	vec4 lightColor;
+	
+	float directionalLightPower;
 	uint activeLights;
+	int pad0;
+	int pad1;
 };
 
 struct PBRMaterial {
@@ -101,6 +108,28 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 
+vec3 CalculateDirectionalLight(vec3 N, vec3 V, vec3 F0, vec3 albedo, float metallic, float roughness) {
+	vec3 L = normalize(scene.lightDir.xyz);
+	vec3 H = normalize(V + L);
+	vec3 radiance = scene.lightColor.rgb * scene.directionalLightPower;
+	
+	// cook-torrance brdf
+	float NDF = DistributionGGX(N, H, roughness);        
+	float G   = GeometrySmith(N, V, L, roughness);      
+	vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
+	
+	vec3 kS = F;
+	vec3 kD = vec3(1.0) - kS;
+	kD *= 1.0 - metallic;
+	
+	vec3 numerator = NDF * G * F;
+	float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
+	vec3 specular = numerator / denominator;
+	
+	float NdotL = max(dot(N, L), 0.0);
+	return (kD * albedo.rgb / PI + specular) * radiance * NdotL;
+}
+
 void main() {
 	PBRMaterial material = materials[materialOffset];
 	
@@ -134,7 +163,8 @@ void main() {
 	
     vec3 V = normalize(scene.cameraPosition.xyz - position.xyz);
 	
-	vec3 Lo = vec3(0.0);
+	vec3 Lo = vec3(0);
+	Lo += CalculateDirectionalLight(N, V, F0, albedoValue.rgb, metallic, roughness);
 	for(int i = 0; i < scene.activeLights; i++) {
 		Light light = lights[i];
 		
