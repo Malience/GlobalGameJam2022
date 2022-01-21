@@ -80,7 +80,7 @@ void init(std::string applicationName) {
 #ifdef _DEBUG
 	edl::log::setLevel(edl::log::Level::trace);
 #else
-	edl::log::setLevel(edl::log::Level::off);
+	edl::log::setLevel(edl::log::Level::trace);
 #endif
 
 	edl::GLFW::createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello World");

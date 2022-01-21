@@ -14,6 +14,7 @@ void loadIMG(res::Toolchain& toolchain, res::Resource& res) {
 
     int width, height, channels;
 
+    //stbi_set_flip_vertically_on_load(1);
     stbi_uc* data = stbi_load(res.path, &width, &height, &channels, 4);
 
     //std::cout << stbi_failure_reason() << std::endl;

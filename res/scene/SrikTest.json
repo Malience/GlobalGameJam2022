@@ -2,24 +2,31 @@
 	"Objects": [
 		{
 			"Name": "Smoothy",
-			"Position": [ 0, 0, 10 ],
-			"Rotation": [ 0, 0, 0 ],
+			"Position": [ 0, 0, 0 ],
+			"Rotation": [ 0, 90, 0 ],
 			"Scale": [ 1, 1, 1 ],
 			"Model": "SmoothyModel"
 		},
 		{
 			"Name": "Chonky",
-			"Position": [ 0, 0, 0 ],
-			"Rotation": [ 0, 0, 0 ],
+			"Position": [ 0, 0, -10 ],
+			"Rotation": [ 0, 90, 0 ],
 			"Scale": [ 1, 1, 1 ],
 			"Model": "ChonkyModel"
 		},
 		{
 			"Name": "Housey",
-			"Position": [ 4, 0, 0 ],
-			"Rotation": [ 0, 0, 0 ],
-			"Scale": [ 1, 1, 1 ],
+			"Position": [ 0, 14.25, 7.5 ],
+			"Rotation": [ 0, 90, 0 ],
+			"Scale": [ 5, 5, 10 ],
 			"Model": "HouseModel"
+		},
+		{
+			"Name": "PlaneArrid3",
+			"Position": [ 4, 0, 0 ],
+			"Rotation": [ 180, 0, 0 ],
+			"Scale": [ 0.5, 0.5, 0.5 ],
+			"Model": "MapArridModel"
 		}
 	],
 	
@@ -32,12 +39,17 @@
 		{
 			"Name": "ChonkyModel",
 			"Mesh": "ChonkyMesh",
-			"Material": "CubeMaterial"
+			"Material": "EndWinMaterial"
 		},
 		{
 			"Name": "HouseModel",
 			"Mesh": "HouseMesh",
-			"Material": "CubeMaterial"
+			"Material": "EndWinMaterial"
+		},
+		{
+			"Name": "MapArridModel",
+			"Mesh": "PlaneMesh",
+			"Material": "MapArrid3Material"
 		}
 	],
 	
@@ -50,7 +62,29 @@
 			"Roughness": 0,
 			"AO": 10.0,
 			
-			"AlbedoTexture": "CubeTexture",
+			"AlbedoTexture": "EndLose",
+			"NormalTexture": ""
+		},
+		{
+			"Name": "EndWinMaterial",
+			
+			"Tint": [ 0, 0, 0, 0 ],
+			"Metallic": 0,
+			"Roughness": 0,
+			"AO": 10.0,
+			
+			"AlbedoTexture": "EndWin",
+			"NormalTexture": ""
+		},
+		{
+			"Name": "MapArrid3Material",
+			
+			"Tint": [ 0, 0, 0, 0 ],
+			"Metallic": 0,
+			"Roughness": 0,
+			"AO": 10.0,
+			
+			"AlbedoTexture": "MapArrid3",
 			"NormalTexture": ""
 		}
 	],
@@ -72,9 +106,34 @@
 			"Filename": "models/house_001.obj"
 		},
 		{
-			"Name": "CubeTexture",
+			"Name": "MapArrid1",
 			"Type": "img",
-			"Filename": "textures/wall.jpg"
+			"Filename": "textures/MapArrid1.png"
+		},
+		{
+			"Name": "MapArrid3",
+			"Type": "img",
+			"Filename": "textures/MapArrid3.png"
+		},
+		{
+			"Name": "MapArrid5",
+			"Type": "img",
+			"Filename": "textures/MapArrid5.png"
+		},
+		{
+			"Name": "EndWin",
+			"Type": "img",
+			"Filename": "textures/Win.png"
+		},
+		{
+			"Name": "EndLose",
+			"Type": "img",
+			"Filename": "textures/Lose.png"
+		},
+		{
+			"Name": "PlaneMesh",
+			"Type": "mesh",
+			"Filename": "models/plane.obj"
 		}
 	]
 }

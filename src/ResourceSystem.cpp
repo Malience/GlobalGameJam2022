@@ -250,7 +250,16 @@ void ResourceSystem::loadObject(const rapidjson::GenericObject<false, rapidjson:
     // Setup Rotation from gradian euler angles
     if (object.HasMember("Rotation")) {
         auto& arr = object["Rotation"].GetArray();
-        o.rotation = glm::quat(glm::vec3(arr[0].GetFloat(), arr[1].GetFloat(), arr[2].GetFloat()));
+
+        float x = arr[0].GetFloat();
+        float y = arr[1].GetFloat();
+        float z = arr[2].GetFloat();
+
+        x = glm::radians(x);
+        y = glm::radians(y);
+        z = glm::radians(z);
+
+        o.rotation = glm::quat(glm::vec3(x, y, z));
     }
 
     // Setup Scale
@@ -572,6 +581,8 @@ const char* ResourceSystem::findDirectory(const char* filename) {
             return directories[i].c_str();
         }
     }
+
+    std::cout << "Directory not found: " << filename << std::endl;
 
     assert(false, "Directory not found!");
 }
