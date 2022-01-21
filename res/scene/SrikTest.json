@@ -44,7 +44,7 @@
 		{
 			"Name": "HouseModel",
 			"Mesh": "HouseMesh",
-			"Material": "EndWinMaterial"
+			"Material": "HouseMaterial"
 		},
 		{
 			"Name": "MapArridModel",
@@ -63,6 +63,17 @@
 			"AO": 10.0,
 			
 			"AlbedoTexture": "EndLose",
+			"NormalTexture": ""
+		},
+		{
+			"Name": "HouseMaterial",
+			
+			"Tint": [ 0, 0, 0, 0 ],
+			"Metallic": 0,
+			"Roughness": 0,
+			"AO": 10.0,
+			
+			"AlbedoTexture": "HouseAlbedo",
 			"NormalTexture": ""
 		},
 		{
@@ -104,6 +115,11 @@
 			"Name": "HouseMesh",
 			"Type": "mesh",
 			"Filename": "models/house_001.obj"
+		},
+		{
+			"Name": "HouseAlbedo",
+			"Type": "img",
+			"Filename": "textures/buildings/house_001.png"
 		},
 		{
 			"Name": "MapArrid1",
