@@ -7,9 +7,7 @@ project(EngineBasic3D C CXX)
 
 find_package(Vulkan REQUIRED FATAL_ERROR)
 find_package(glm REQUIRED FATAL_ERROR)
-find_package(stb REQUIRED FATAL_ERROR)
 find_package(GLFW3 REQUIRED FATAL_ERROR)
-find_package(assimp REQUIRED FATAL_ERROR)
 
 ## ShaderC
 find_path(shaderc_INCLUDE_DIR
@@ -26,7 +24,9 @@ set_target_properties(shaderc PROPERTIES IMPORTED_LOCATION_MINSIZEREL "$ENV{VULK
 set_target_properties(shaderc PROPERTIES IMPORTED_LOCATION_RELWITHDEBINFO "$ENV{VULKAN_SDK}/lib/shaderc_combined.lib")
 set_target_properties(shaderc PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${shaderc_INCLUDE_DIR}")
 
-add_subdirectory(ext)
+if(EXISTS ext)
+	add_subdirectory(ext)
+endif()
 
 if(NOT TARGET EDL::graphics_lib)
 	find_package(EDL REQUIRED FATAL_ERROR)

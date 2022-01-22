@@ -70,7 +70,6 @@ void ResourceSystem::init(vk::Instance& instance, global_info* globalInfo) {
     toolchain.add("system", this);
 
     //TODO: If something is messing up, it's probably this!
-    objects.reserve(1000);
     renderables.reserve(1000);
 }
 
@@ -234,12 +233,10 @@ void ResourceSystem::loadReflection(const rapidjson::GenericObject<false, rapidj
 void ResourceSystem::loadObject(const rapidjson::GenericObject<false, rapidjson::Value>& object) {
     //TODO: Check if it's already loaded
 
-    objects.push_back({});
-    GameObject& o = objects.back();
-    root.addChild(o);
-
     assert(object.HasMember("Name"));
-    o.name = object["Name"].GetString();
+    std::string name = object["Name"].GetString();
+
+    GameObject& o = objectRegistry.createObject(name);
 
     // Setup Position
     if (object.HasMember("Position")) {
@@ -518,7 +515,7 @@ void ResourceSystem::update(float delta) {
         if (queuebot == MAX_QUEUE) queuebot = 0;
     }
 
-    root.update(toolchain, delta);
+    objectRegistry.update(toolchain, delta);
     //fileLoader.cleanup();
 }
 

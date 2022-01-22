@@ -36,25 +36,10 @@ public:
     VkShaderStageFlagBits stage;
 };
 
-class FileRecord {
-public:
-    std::string name;
-    std::string type; //Enum?
-    std::string subtype; //Enum?
-    std::string filename; //This should probably be saved as a full path
-};
-
 class Pipeline;
 class ResourceSystem;
 
 typedef void (*LoadFunction)(edl::res::Toolchain& toolchain, edl::res::Resource& res);
-
-class ResourceLoader {
-public:
-    ResourceLoader() {}
-
-    virtual void loadResource(ResourceSystem& system, const FileRecord& record) {};
-};
 
 // Goal 1: Converge DescriptorManager, StagingBuffer, ImageTable, and UniformBufferObject
 // COMPLETE: Goal 2: Loading the individual segments (renderpass, shader, etc.) should load from the json or from another file
@@ -162,8 +147,8 @@ public:
 
     Camera camera;
     glm::mat4 proj;
-    GameObject root;
-    std::vector<GameObject> objects;
+
+    ObjectRegistry objectRegistry;
     std::vector<Renderable> renderables;
 
 private:

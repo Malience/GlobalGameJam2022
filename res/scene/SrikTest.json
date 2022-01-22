@@ -24,7 +24,7 @@
 		{
 			"Name": "PlaneArrid3",
 			"Position": [ 4, 0, 0 ],
-			"Rotation": [ 180, 0, 0 ],
+			"Rotation": [ 0, 0, 0 ],
 			"Scale": [ 0.5, 0.5, 0.5 ],
 			"Model": "MapArridModel"
 		}
@@ -130,7 +130,7 @@
 		{
 			"Name": "HouseAlbedo",
 			"Type": "img",
-			"Filename": "textures/buildings/house_001.png"
+			"Filename": "textures/buildings/house_002.png"
 		},
 		{
 			"Name": "MapArrid1",
@@ -165,7 +165,7 @@
 		{
 			"Name": "Farmer",
 			"Type": "img",
-			"Filename": "textures/FarmerDoulbeRotateFlip.png"
+			"Filename": "textures/Farmer.png"
 		}
 	]
 }

@@ -75,6 +75,9 @@ void main() {
 	texCoord0 = texCoords[gl_VertexIndex + drawData.texCoord0Offset];
 	//texCoord1 = texCoords[gl_VertexIndex + drawData.texCoord1Offset];
 	
+	//texCoord0.x = 1.0 - texCoord0.x;
+	texCoord0.y = 1.0 - texCoord0.y;
+	
 	materialOffset = drawData.materialOffset;
 	
 	mat4 mvp = transforms[drawData.mvpOffset];

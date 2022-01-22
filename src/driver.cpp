@@ -18,8 +18,6 @@
 #include "edl/io.h"
 #include "edl/debug.h"
 
-#include <stb/stb.h>
-#include <stb/stb_image.h>
 #include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
 

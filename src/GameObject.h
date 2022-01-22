@@ -16,23 +16,100 @@ class GameComponent;
 class GameObject {
 public:
     GameObject();
+
     void update(res::Toolchain& toolchain, float delta);
     void calculateTransform();
 
     void addChild(GameObject& object) {
         children.push_back(&object);
+        object.parent = this;
     }
 
-    std::string name;
+    void removeChild(GameObject& object) {
+        children.erase(std::remove(children.begin(), children.end(), &object), children.end());
+        object.parent = nullptr;
+    }
+
+    const std::string& getName() {
+        return name;
+    }
+    
+    GameObject* getParent() {
+        return parent;
+    }
+
+    const std::vector<GameObject*>& getChildren() {
+        return children;
+    }
 
     glm::vec3 position;
     glm::quat rotation;
     glm::vec3 scale;
     glm::mat4 transform;
 
+    GameComponent* component;
+
+private:
+    std::string name;
+
     GameObject* parent;
     std::vector<GameObject*> children;
-    GameComponent* component;
+    
+
+    friend class ObjectRegistry;
+};
+
+class ObjectRegistry {
+public:
+    /// <summary>
+    /// Creates a new object
+    /// </summary>
+    /// <param name="name">The unique name of the object</param>
+    /// <returns>The new object</returns>
+    GameObject& createObject(const std::string& name) {
+        if (registry.find(name) != registry.end()) {
+            std::cout << "ObjectRegistry -> Attempted to create object with duplicate name: " << name << std::endl;
+            throw "ObjectRegistry -> Attempted to create object with duplicate name";
+        }
+        
+        registry.insert({ name, {} });
+
+        GameObject& object = registry.at(name);
+        
+        object.name = name;
+        object.position = glm::vec3(0);
+        object.rotation = glm::quat(0, 0, 0, 0);
+        object.scale = glm::vec3(1);
+        object.calculateTransform();
+
+        root.addChild(object);
+        return object;
+    }
+
+    GameObject& getObject(const std::string& name) {
+        if (registry.find(name) == registry.end()) {
+            std::cout << "ObjectRegistry -> No object found with name: " << name << std::endl;
+            throw "ObjectRegistry -> No object found with name";
+        }
+        return registry.at(name);
+    }
+
+    void detachFromRoot(GameObject& object) {
+        root.removeChild(object);
+    }
+
+    void attachToRoot(GameObject& object) {
+        root.addChild(object);
+    }
+
+    void update(res::Toolchain& toolchain, float delta) {
+        root.update(toolchain, delta);
+    }
+
+
+private:
+    GameObject root;
+    std::unordered_map<std::string, GameObject> registry;
 };
 
 }
