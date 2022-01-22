@@ -16,9 +16,9 @@
 		},
 		{
 			"Name": "Housey",
-			"Position": [ 0, 14.25, 7.5 ],
+			"Position": [ -35, 0, -7.5 ],
 			"Rotation": [ 0, 90, 0 ],
-			"Scale": [ 5, 5, 10 ],
+			"Scale": [ 7.88, 3.94, 7.88 ],
 			"Model": "HouseModel"
 		},
 		{
