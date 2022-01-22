@@ -10,7 +10,7 @@
 		{
 			"Name": "Chonky",
 			"Position": [ 0, 0, -10 ],
-			"Rotation": [ 0, 90, 0 ],
+			"Rotation": [ 0, -90, 0 ],
 			"Scale": [ 1, 1, 1 ],
 			"Model": "ChonkyModel"
 		},
@@ -39,7 +39,7 @@
 		{
 			"Name": "ChonkyModel",
 			"Mesh": "ChonkyMesh",
-			"Material": "EndWinMaterial"
+			"Material": "FarmerMaterial"
 		},
 		{
 			"Name": "HouseModel",
@@ -97,6 +97,17 @@
 			
 			"AlbedoTexture": "MapArrid3",
 			"NormalTexture": ""
+		},
+		{
+			"Name": "FarmerMaterial",
+			
+			"Tint": [ 0, 0, 0, 0 ],
+			"Metallic": 0,
+			"Roughness": 0,
+			"AO": 10.0,
+			
+			"AlbedoTexture": "Farmer",
+			"NormalTexture": ""
 		}
 	],
 	
@@ -150,6 +161,11 @@
 			"Name": "PlaneMesh",
 			"Type": "mesh",
 			"Filename": "models/plane.obj"
+		},
+		{
+			"Name": "Farmer",
+			"Type": "img",
+			"Filename": "textures/FarmerDoulbeRotateFlip.png"
 		}
 	]
 }
