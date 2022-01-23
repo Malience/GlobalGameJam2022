@@ -145,6 +145,10 @@ void ResourceSystem::loadScene(const std::string& filename) {
         }
     }
 
+    if (d.HasMember("DirLight")) {
+        loadDirLight(d["DirLight"].GetObject());
+    }
+
     if (d.HasMember("Objects")) {
         auto& models = d["Objects"].GetArray();
         for (auto* ptr = models.Begin(); ptr != models.End(); ++ptr) {
@@ -189,6 +193,10 @@ void ResourceSystem::refreshScene(const std::string& filename) {
         std::cout << "JSON parsing error, code: " << d.GetParseError() << ", offset: " << d.GetErrorOffset() << std::endl;
     }
     assert(d.IsObject());
+
+    if (d.HasMember("DirLight")) {
+        loadDirLight(d["DirLight"].GetObject());
+    }
 
     if (d.HasMember("Objects")) {
         auto& models = d["Objects"].GetArray();
@@ -377,6 +385,23 @@ void ResourceSystem::loadMaterial(const rapidjson::GenericObject<false, rapidjso
     res.status = edl::res::ResourceStatus::LOADED;
 }
 
+void ResourceSystem::loadDirLight(const rapidjson::GenericObject<false, rapidjson::Value>& object) {
+    if (!toolchain.has("DirLight")) {
+        toolchain.add("DirLight", &dirLight);
+    }
+
+    assert(object.HasMember("Direction"));
+    assert(object.HasMember("Color"));
+    assert(object.HasMember("Power"));
+
+    auto& dirarr = object["Direction"].GetArray();
+    auto& colarr = object["Color"].GetArray();
+
+    dirLight.lightDir = glm::vec4(dirarr[0].GetFloat(), dirarr[1].GetFloat(), dirarr[2].GetFloat(), 1.0f);
+    dirLight.lightColor = glm::vec4(colarr[0].GetFloat(), colarr[1].GetFloat(), colarr[2].GetFloat(), 1.0f);
+    dirLight.directionalLightPower = object["Power"].GetFloat();
+}
+
 void ResourceSystem::draw(VkCommandBuffer& cb, uint32_t imageIndex) {
     std::string currentPipeline = "";
     
@@ -427,18 +452,6 @@ void ResourceSystem::draw(VkCommandBuffer& cb, uint32_t imageIndex) {
     vkCmdBindIndexBuffer(cb, indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT16);
 
     uint32_t drawID = 0;
-
-    glm::vec3 campos = camera.getPos();
-
-    SceneData scene = {};
-    scene.activeLights = 0;
-    scene.cameraPosition = glm::vec4(campos, 1.0f);
-
-    scene.directionalLightPower = 4.0f;
-    scene.lightDir = glm::vec4(-1.0f, -1.0f, 0.0f, 1.0f);
-    scene.lightColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-
-    edl::updateStorageBuffer(stagingBuffer, sceneDataBuffer, 0, &scene, 1);
 
     //TODO: Update lights
 
@@ -557,6 +570,21 @@ void ResourceSystem::update(float delta) {
     if (glfwGetKey(camera.window, GLFW_KEY_F5) == GLFW_PRESS) {
         refreshScene("scene.json");
     }
+
+    glm::vec3 campos = camera.getPos();
+    SceneData scene = {};
+    scene.activeLights = 0;
+    scene.cameraPosition = glm::vec4(campos, 1.0f);
+
+    //scene.directionalLightPower = 4.0f;
+    //scene.lightDir = glm::vec4(-1.0f, -1.0f, 0.0f, 1.0f);
+    //scene.lightColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
+    scene.directionalLightPower = dirLight.directionalLightPower;
+    scene.lightDir = dirLight.lightDir;
+    scene.lightColor = dirLight.lightColor;
+
+    edl::updateStorageBuffer(stagingBuffer, sceneDataBuffer, 0, &scene, 1);
     //fileLoader.cleanup();
 }
 

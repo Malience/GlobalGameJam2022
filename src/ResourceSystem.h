@@ -16,6 +16,7 @@
 #include "camera.h"
 #include "GameObject.h"
 #include "Renderable.h"
+#include "bindless_types.h"
 
 #include "vulkan/vulkan.h"
 
@@ -63,6 +64,7 @@ public:
     void loadObject(const rapidjson::GenericObject<false, rapidjson::Value>& object);
     void loadModel(const rapidjson::GenericObject<false, rapidjson::Value>& object);
     void loadMaterial(const rapidjson::GenericObject<false, rapidjson::Value>& object);
+    void loadDirLight(const rapidjson::GenericObject<false, rapidjson::Value>& object);
 
     void draw(VkCommandBuffer& cb, uint32_t imageIndex);
 
@@ -148,6 +150,7 @@ public:
 
     Camera camera;
     glm::mat4 proj;
+    DirLight dirLight;
 
     ObjectRegistry objectRegistry;
     std::vector<Renderable> renderables;

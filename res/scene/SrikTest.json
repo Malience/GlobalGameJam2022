@@ -1,4 +1,10 @@
 {
+	"DirLight": {
+		"Direction": [-1.0, -1.0, 0.0],
+		"Color": [0.2, 0.0, 0.0],
+		"Power": 1.0
+	},
+	
 	"Objects": [
 		{
 			"Name": "Smoothy",

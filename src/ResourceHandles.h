@@ -172,6 +172,22 @@ public:
         return chain.at(id);
     }
 
+    bool has(const std::string& id) {
+        std::hash<std::string> hasher;
+        KeyID hash = hasher(id);
+        return chain.find(hash) != chain.end();
+    }
+
+    bool has(const char* id) {
+        std::hash<std::string> hasher;
+        KeyID hash = hasher(id);
+        return chain.find(hash) != chain.end();
+    }
+
+    bool has(KeyID id) {
+        return chain.find(id) != chain.end();
+    }
+
 protected:
     std::unordered_map<KeyID, T> chain;
 };

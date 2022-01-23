@@ -32,6 +32,12 @@ struct SceneData {
 	int pad1;
 };
 
+struct DirLight {
+	glm::vec4 lightDir;
+	glm::vec4 lightColor;
+	float directionalLightPower;
+};
+
 struct PBRMaterial {
 	glm::vec4 tint;
 
