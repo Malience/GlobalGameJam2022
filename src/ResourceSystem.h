@@ -53,6 +53,7 @@ public:
     void init(vk::Instance& instance, global_info* globalInfo);
 
     void loadScene(const std::string& filename);
+    void refreshScene(const std::string& filename);
 
     void loadFiles(const rapidjson::GenericArray<false, rapidjson::Value>& files);
 

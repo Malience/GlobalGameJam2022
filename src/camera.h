@@ -19,8 +19,10 @@ public:
 
     glm::mat4 view;
 
-private:
     GLFWwindow* window;
+
+private:
+    
 
     glm::vec3 forward, right, up;
     glm::vec3 pos;

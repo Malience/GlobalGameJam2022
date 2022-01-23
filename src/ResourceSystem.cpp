@@ -178,6 +178,32 @@ void ResourceSystem::loadScene(const std::string& filename) {
     
 }
 
+void ResourceSystem::refreshScene(const std::string& filename) {
+    std::string dir = "./res/scene/";
+    std::vector<char> data;
+    loadFile(dir + filename, data);
+
+    rapidjson::Document d;
+    d.Parse<rapidjson::kParseStopWhenDoneFlag>(data.data(), data.size());
+    if (d.HasParseError()) {
+        std::cout << "JSON parsing error, code: " << d.GetParseError() << ", offset: " << d.GetErrorOffset() << std::endl;
+    }
+    assert(d.IsObject());
+
+    if (d.HasMember("Objects")) {
+        auto& models = d["Objects"].GetArray();
+        for (auto* ptr = models.Begin(); ptr != models.End(); ++ptr) {
+            loadObject(ptr->GetObject());
+        }
+    }
+
+    if (d.HasMember("Scenes")) {
+        for (auto* ptr1 = d["Scenes"].GetArray().Begin(); ptr1 != d["Scenes"].GetArray().End(); ++ptr1) {
+            refreshScene(ptr1->GetString());
+        }
+    }
+}
+
 void ResourceSystem::loadFiles(const rapidjson::GenericArray<false, rapidjson::Value>& files) {
     for (auto* ptr = files.Begin(); ptr != files.End(); ++ptr) {
         auto& obj = ptr->GetObject();
@@ -236,7 +262,14 @@ void ResourceSystem::loadObject(const rapidjson::GenericObject<false, rapidjson:
     assert(object.HasMember("Name"));
     std::string name = object["Name"].GetString();
 
-    GameObject& o = objectRegistry.createObject(name);
+    GameObject* optr;
+    if (objectRegistry.hasObject(name)) {
+        optr = &objectRegistry.getObject(name);
+    }
+    else {
+        optr = &objectRegistry.createObject(name);;
+    }
+    GameObject& o = *optr;
 
     // Setup Position
     if (object.HasMember("Position")) {
@@ -269,15 +302,18 @@ void ResourceSystem::loadObject(const rapidjson::GenericObject<false, rapidjson:
 
     // Setup Model
     if (object.HasMember("Model")) {
-        renderables.push_back({});
-        Renderable& r = renderables.back();
-        r.mvpHandle = getStorageBufferIndex(transformBuffer);
-        r.parent = &o;
+        if (o.component == nullptr) {
+            renderables.push_back({});
+            Renderable& r = renderables.back();
+            r.mvpHandle = getStorageBufferIndex(transformBuffer);
+            r.parent = &o;
+            o.component = &r;
+        }
+        
+        Renderable& r = *(Renderable*)o.component;
         std::string meshName = object["Model"].GetString();
         edl::res::ResourceID meshID = edl::hashString(meshName);
         r.model = meshID;
-
-        o.component = &r;
     }
 }
 
@@ -516,6 +552,11 @@ void ResourceSystem::update(float delta) {
     }
 
     objectRegistry.update(toolchain, delta);
+
+    //TODO: Lol, this is a hack and a half
+    if (glfwGetKey(camera.window, GLFW_KEY_F5) == GLFW_PRESS) {
+        refreshScene("scene.json");
+    }
     //fileLoader.cleanup();
 }
 

@@ -106,6 +106,9 @@ public:
         root.update(toolchain, delta);
     }
 
+    bool hasObject(const std::string& name) {
+        return registry.find(name) != registry.end();
+    }
 
 private:
     GameObject root;
