@@ -33,6 +33,13 @@
 			"Rotation": [ 0, 0, 0 ],
 			"Scale": [ 0.5, 0.5, 0.5 ],
 			"Model": "MapArridModel"
+		},
+		{
+			"Name": "CardTest",
+			"Position": [ 8, 0, 0 ],
+			"Rotation": [ 0, 90, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Model": "CardModel"
 		}
 	],
 	
@@ -56,6 +63,11 @@
 			"Name": "MapArridModel",
 			"Mesh": "PlaneMesh",
 			"Material": "MapArrid3Material"
+		},
+		{
+			"Name": "CardModel",
+			"Mesh": "CardMesh",
+			"Material": "CardTemplateMaterial"
 		}
 	],
 	
@@ -113,6 +125,17 @@
 			"AO": 10.0,
 			
 			"AlbedoTexture": "Farmer",
+			"NormalTexture": ""
+		},
+		{
+			"Name": "CardTemplateMaterial",
+			
+			"Tint": [ 0, 0, 0, 0 ],
+			"Metallic": 0,
+			"Roughness": 0,
+			"AO": 10.0,
+			
+			"AlbedoTexture": "CardTemplate",
 			"NormalTexture": ""
 		}
 	],
@@ -172,6 +195,16 @@
 			"Name": "Farmer",
 			"Type": "img",
 			"Filename": "textures/Farmer.png"
+		},
+		{
+			"Name": "CardMesh",
+			"Type": "mesh",
+			"Filename": "models/card_001.obj"
+		},
+		{
+			"Name": "CardTemplate",
+			"Type": "img",
+			"Filename": "textures/cards/card_template.png"
 		}
 	]
 }
