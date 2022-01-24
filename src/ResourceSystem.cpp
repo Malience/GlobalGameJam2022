@@ -68,6 +68,7 @@ void ResourceSystem::init(vk::Instance& instance, global_info* globalInfo) {
     lightBuffer = createStorageBuffer(instance, sizeof(Light), 10);
 
     toolchain.add("system", this);
+    toolchain.add("ObjectRegistry", &objectRegistry);
 
     //TODO: If something is messing up, it's probably this!
     renderables.reserve(1000);
@@ -457,6 +458,8 @@ void ResourceSystem::draw(VkCommandBuffer& cb, uint32_t imageIndex) {
 
     for (int i = 0; i < renderables.size(); ++i) {
 
+        if (renderables[i].parent == nullptr || !renderables[i].parent->getEnabled()) continue;
+
         // Update the transform
         //edl::updateStorageBuffer(stagingBuffer, transformBuffer, renderables[i].mvpHandle, &renderables[i].parent->transform, 1);
 
@@ -564,8 +567,6 @@ void ResourceSystem::update(float delta) {
         if (queuebot == MAX_QUEUE) queuebot = 0;
     }
 
-    objectRegistry.update(toolchain, delta);
-
     //TODO: Lol, this is a hack and a half
     if (glfwGetKey(camera.window, GLFW_KEY_F5) == GLFW_PRESS) {
         refreshScene("scene.json");
@@ -575,17 +576,18 @@ void ResourceSystem::update(float delta) {
     SceneData scene = {};
     scene.activeLights = 0;
     scene.cameraPosition = glm::vec4(campos, 1.0f);
-
-    //scene.directionalLightPower = 4.0f;
-    //scene.lightDir = glm::vec4(-1.0f, -1.0f, 0.0f, 1.0f);
-    //scene.lightColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-
     scene.directionalLightPower = dirLight.directionalLightPower;
     scene.lightDir = dirLight.lightDir;
     scene.lightColor = dirLight.lightColor;
 
     edl::updateStorageBuffer(stagingBuffer, sceneDataBuffer, 0, &scene, 1);
     //fileLoader.cleanup();
+
+    if (engineSetup) {
+        gameEngine.update(toolchain, delta);
+    }
+
+    objectRegistry.update(toolchain, delta);
 }
 
 //Maybe multiple create functions, one for named resources, unnamed resources, and filenamed resources

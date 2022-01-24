@@ -4,7 +4,7 @@
 
 namespace edl {
 
-void weatherRainStart(res::Toolchain& toolchain, float delta) {
+void weatherRainStart(res::Toolchain& toolchain, const std::string& character, float delta) {
     // Start something
     ObjectRegistry& registry = toolchain.getTool<ObjectRegistry>("ObjectRegistry");
     GameObject& farmer = registry.getObject("Farmer");
@@ -13,12 +13,12 @@ void weatherRainStart(res::Toolchain& toolchain, float delta) {
 }
 
 
-void weatherRainOngoing(res::Toolchain& toolchain, float delta) {
+void weatherRainOngoing(res::Toolchain& toolchain, const std::string& character, float delta) {
     // Do something
 }
 
 
-void weatherRainEnd(res::Toolchain& toolchain, float delta) {
+void weatherRainEnd(res::Toolchain& toolchain, const std::string& character, float delta) {
     // End Something
 }
 

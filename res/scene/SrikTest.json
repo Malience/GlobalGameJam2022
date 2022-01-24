@@ -40,6 +40,13 @@
 			"Rotation": [ 0, 90, 0 ],
 			"Scale": [ 1, 1, 1 ],
 			"Model": "CardModel"
+		},
+		{
+			"Name": "SkyOrb",
+			"Position": [ 10, 0, 10 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 0.5, 0.5, 0.5 ],
+			"Model": "SmoothyModel"
 		}
 	],
 	
@@ -199,12 +206,12 @@
 		{
 			"Name": "CardMesh",
 			"Type": "mesh",
-			"Filename": "models/card_001.obj"
+			"Filename": "models/card.obj"
 		},
 		{
 			"Name": "CardTemplate",
 			"Type": "img",
-			"Filename": "textures/cards/card_template.png"
+			"Filename": "textures/cards/Card_Template_002.png"
 		}
 	]
 }

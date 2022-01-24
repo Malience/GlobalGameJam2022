@@ -42,6 +42,14 @@ public:
         return children;
     }
 
+    void setEnabled(bool e) {
+        enabled = e;
+    }
+
+    bool getEnabled() {
+        return enabled;
+    }
+
     glm::vec3 position;
     glm::quat rotation;
     glm::vec3 scale;
@@ -51,6 +59,8 @@ public:
 
 private:
     std::string name;
+
+    bool enabled = true;
 
     GameObject* parent;
     std::vector<GameObject*> children;

@@ -17,6 +17,7 @@
 #include "GameObject.h"
 #include "Renderable.h"
 #include "bindless_types.h"
+#include "GameEngine.h"
 
 #include "vulkan/vulkan.h"
 
@@ -154,6 +155,9 @@ public:
 
     ObjectRegistry objectRegistry;
     std::vector<Renderable> renderables;
+
+    bool engineSetup = false;
+    GameEngine gameEngine;
 
 private:
     

@@ -185,7 +185,7 @@ void init(std::string applicationName) {
 	VkCommandPoolCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 	createInfo.pNext = nullptr;
-	createInfo.flags = 0;// VkCommandPoolCreateFlagBits::VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+	createInfo.flags = VkCommandPoolCreateFlagBits::VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 	createInfo.queueFamilyIndex = 0;
 
 	vkCreateCommandPool(instance.device, &createInfo, nullptr, &presentPool);
@@ -209,8 +209,11 @@ void init(std::string applicationName) {
 
 	resourceSystem.update(1);
 
-	remakeCommandBuffer(presentBuffers[0], 0);
-	remakeCommandBuffer(presentBuffers[1], 1);
+	resourceSystem.gameEngine.setup(resourceSystem.toolchain);
+	resourceSystem.engineSetup = true;
+
+	//remakeCommandBuffer(presentBuffers[0], 0);
+	//remakeCommandBuffer(presentBuffers[1], 1);
 
 	double last = glfwGetTime();
 	double check = last;
@@ -233,16 +236,18 @@ void init(std::string applicationName) {
 			resourceSystem.update(MS_PER_UPDATE);
 			lag -= MS_PER_UPDATE;
 		}
-		
-		//resourceSystem.updateModels(delta);
-		resourceSystem.stagingBuffer.submit(instance.queues[0]);
-		vkQueueWaitIdle(instance.queues[0]);
-		 
+
 		uint32_t imageIndex = 0;
 		//Disable double buffering
 		vkAcquireNextImageKHR(instance.device, swapchain.swapchain, UINT64_MAX, imageReady, VK_NULL_HANDLE, &imageIndex);
 		//printf("Image Index: %d\n", imageIndex);
 		
+		remakeCommandBuffer(presentBuffers[imageIndex], imageIndex);
+
+		//resourceSystem.updateModels(delta);
+		resourceSystem.stagingBuffer.submit(instance.queues[0]);
+		vkQueueWaitIdle(instance.queues[0]);
+
 
 		VkPipelineStageFlags flags[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		VkSubmitInfo submitInfo = {};
@@ -287,7 +292,7 @@ void remakeCommandBuffer(VkCommandBuffer cb, uint32_t imageIndex) {
 	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 	beginInfo.pNext = 0;
 	beginInfo.pInheritanceInfo = 0;
-	beginInfo.flags = 0;// VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+	beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
 	VkPipelineStageFlagBits srcMask, dstMask;
 	VkImageMemoryBarrier memoryBarrier = {};

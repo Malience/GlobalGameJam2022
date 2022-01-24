@@ -6,9 +6,36 @@
 
 #include "tiny_obj_loader.h"
 
+#include <unordered_set>;
 #include <iostream>
 
 namespace edl {
+
+struct objsucks {
+    objsucks(tinyobj::index_t i) {
+        x = i.vertex_index;
+        y = i.normal_index;
+        z = i.texcoord_index;
+    }
+    uint32_t x, y, z;
+
+    bool operator==(const objsucks& other) const {
+        return (x == other.x) && (y == other.y) && (z == other.z);
+    }
+};
+
+struct objsucks_hash {
+    std::size_t operator () (const objsucks& p) const {
+        auto h1 = std::hash<uint32_t>{}(p.x);
+        auto h2 = std::hash<uint32_t>{}(p.y);
+        auto h3 = std::hash<uint32_t>{}(p.z);
+
+
+        // Mainly for demonstration purposes, i.e. works but is overly simple
+        // In the real world, use sth. like boost.hash_combine
+        return h1 ^ h2 ^ h3;
+    }
+};
 
 void loadMesh(res::Toolchain& toolchain, res::Resource& res) {
     edl::ResourceSystem& system = toolchain.getTool<edl::ResourceSystem>("system");
@@ -36,22 +63,8 @@ void loadMesh(res::Toolchain& toolchain, res::Resource& res) {
     auto& shape = shapes[0];
     auto& mesh = shape.mesh;
 
-    uint32_t vsize = attrib.vertices.size() / 3;
-    uint32_t nsize = attrib.normals.size() / 3;
-    uint32_t tsize = attrib.texcoords.size() / 2;
-
-    uint32_t largestBuffer = vsize > nsize ? (vsize > tsize ? 0 : 2) : (nsize > tsize ? 1 : 2);
-
-    uint32_t vertexCount = largestBuffer == 0 ? vsize : (largestBuffer == 1 ? nsize : tsize);
+    uint32_t vertexCount = mesh.indices.size();
     uint32_t indexCount = mesh.indices.size();
-
-    meshres.positionOffset = edl::getStorageBufferIndex(system.positionBuffer, vertexCount);
-    meshres.normalOffset = edl::getStorageBufferIndex(system.normalBuffer, vertexCount);
-    meshres.tangentOffset = edl::getStorageBufferIndex(system.normalBuffer, vertexCount);
-    //uint32_t bitangentOffset = edl::getStorageBufferIndex(system.normalBuffer, vertexCount);
-    meshres.texCoord0Offset = edl::getStorageBufferIndex(system.texCoord0Buffer, vertexCount);
-
-    meshres.indexOffset = edl::getStorageBufferIndex(system.indexBuffer, indexCount);
 
     std::vector<glm::vec4> positions(vertexCount);
     std::vector<glm::vec4> normals(vertexCount);
@@ -65,6 +78,9 @@ void loadMesh(res::Toolchain& toolchain, res::Resource& res) {
     auto& n = attrib.normals;
     auto& tv = attrib.texcoords;
 
+    std::unordered_map<objsucks, uint32_t, objsucks_hash> indexMap;
+
+    size_t nextIndex = 0;
     size_t index_offset = 0;
     for (size_t f = 0; f < mesh.num_face_vertices.size(); f++) {
         auto idx0 = mesh.indices[index_offset + 0];
@@ -94,17 +110,18 @@ void loadMesh(res::Toolchain& toolchain, res::Resource& res) {
 
         //TODO: Consider smoothing?
 
-        uint32_t oidx0 = largestBuffer == 0 ? idx0.vertex_index : (largestBuffer == 1 ? idx0.normal_index : idx0.texcoord_index);
-        uint32_t oidx1 = largestBuffer == 0 ? idx1.vertex_index : (largestBuffer == 1 ? idx1.normal_index : idx1.texcoord_index);
-        uint32_t oidx2 = largestBuffer == 0 ? idx2.vertex_index : (largestBuffer == 1 ? idx2.normal_index : idx2.texcoord_index);
-
-        tangents[oidx0] = tangent;
-        tangents[oidx1] = tangent;
-        tangents[oidx2] = tangent;
-
         for (int i = 0; i < 3; i++) {
             auto idx = mesh.indices[index_offset + i];
-            uint32_t oidx = largestBuffer == 0 ? idx.vertex_index : (largestBuffer == 1 ? idx.normal_index : idx.texcoord_index);
+            objsucks o(idx);
+            uint32_t oidx = 0;
+            if (indexMap.find(o) != indexMap.end()) {
+                oidx = indexMap.at(o);
+            }
+            else {
+                oidx = nextIndex;
+                nextIndex++;
+                indexMap.insert({ o, oidx });
+            }
 
             positions[oidx].x = v[idx.vertex_index * 3 + 0];
             positions[oidx].y = v[idx.vertex_index * 3 + 1];
@@ -119,6 +136,8 @@ void loadMesh(res::Toolchain& toolchain, res::Resource& res) {
             texCoords0[oidx].x = tv[idx.texcoord_index * 2 + 0];
             texCoords0[oidx].y = tv[idx.texcoord_index * 2 + 1];
 
+            tangents[oidx] = tangent;
+
             indices[index_offset + i] = oidx;
         }
 
@@ -126,6 +145,16 @@ void loadMesh(res::Toolchain& toolchain, res::Resource& res) {
     }
 
     meshres.indexCount = indexCount;
+
+    vertexCount = nextIndex;
+
+    meshres.positionOffset = edl::getStorageBufferIndex(system.positionBuffer, vertexCount);
+    meshres.normalOffset = edl::getStorageBufferIndex(system.normalBuffer, vertexCount);
+    meshres.tangentOffset = edl::getStorageBufferIndex(system.normalBuffer, vertexCount);
+    //uint32_t bitangentOffset = edl::getStorageBufferIndex(system.normalBuffer, vertexCount);
+    meshres.texCoord0Offset = edl::getStorageBufferIndex(system.texCoord0Buffer, vertexCount);
+
+    meshres.indexOffset = edl::getStorageBufferIndex(system.indexBuffer, indexCount);
 
     edl::updateStorageBuffer(system.stagingBuffer, system.positionBuffer, meshres.positionOffset, positions.data(), vertexCount);
     edl::updateStorageBuffer(system.stagingBuffer, system.normalBuffer, meshres.normalOffset, normals.data(), vertexCount);
