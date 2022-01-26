@@ -30,6 +30,16 @@ public:
         object.parent = nullptr;
     }
 
+    void addComponent(const std::string& name, GameComponent& component);
+
+    bool hasComponent(const std::string& name) {
+        return components.find(name) != components.end();
+    }
+
+    GameComponent& getComponent(const std::string& name) {
+        return *components.at(name);
+    }
+
     const std::string& getName() {
         return name;
     }
@@ -55,7 +65,7 @@ public:
     glm::vec3 scale;
     glm::mat4 transform;
 
-    GameComponent* component;
+    std::unordered_map<std::string, GameComponent*> components;
 
 private:
     std::string name;

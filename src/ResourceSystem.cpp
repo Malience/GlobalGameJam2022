@@ -69,6 +69,8 @@ void ResourceSystem::init(vk::Instance& instance, global_info* globalInfo) {
 
     toolchain.add("system", this);
     toolchain.add("ObjectRegistry", &objectRegistry);
+    toolchain.add("DirLight", &dirLight);
+    toolchain.add("Camera", &camera);
 
     //TODO: If something is messing up, it's probably this!
     renderables.reserve(1000);
@@ -311,15 +313,15 @@ void ResourceSystem::loadObject(const rapidjson::GenericObject<false, rapidjson:
 
     // Setup Model
     if (object.HasMember("Model")) {
-        if (o.component == nullptr) {
+        if (o.components.find("Renderable") == o.components.end()) {
             renderables.push_back({});
             Renderable& r = renderables.back();
             r.mvpHandle = getStorageBufferIndex(transformBuffer);
             r.parent = &o;
-            o.component = &r;
+            o.components.insert({ "Renderable", &r });
         }
         
-        Renderable& r = *(Renderable*)o.component;
+        Renderable& r = *(Renderable*)o.components.at("Renderable");
         std::string meshName = object["Model"].GetString();
         edl::res::ResourceID meshID = edl::hashString(meshName);
         r.model = meshID;

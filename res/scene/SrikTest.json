@@ -1,7 +1,7 @@
 {
 	"DirLight": {
 		"Direction": [-1.0, -1.0, 0.0],
-		"Color": [0.2, 0.0, 0.0],
+		"Color": [1.0, 1.0, 1.0],
 		"Power": 1.0
 	},
 	
@@ -43,10 +43,10 @@
 		},
 		{
 			"Name": "SkyOrb",
-			"Position": [ 10, 0, 10 ],
+			"Position": [ 0, 0, 0 ],
 			"Rotation": [ 0, 0, 0 ],
-			"Scale": [ 0.5, 0.5, 0.5 ],
-			"Model": "SmoothyModel"
+			"Scale": [ 300, 300, 300 ],
+			"Model": "SkyOrbModel"
 		}
 	],
 	
@@ -75,6 +75,11 @@
 			"Name": "CardModel",
 			"Mesh": "CardMesh",
 			"Material": "CardTemplateMaterial"
+		},
+		{
+			"Name": "SkyOrbModel",
+			"Mesh": "SkyOrbMesh",
+			"Material": "SkyOrbMaterial"
 		}
 	],
 	
@@ -85,7 +90,7 @@
 			"Tint": [ 0, 0, 0, 0 ],
 			"Metallic": 0,
 			"Roughness": 0,
-			"AO": 10.0,
+			"AO": 1.0,
 			
 			"AlbedoTexture": "EndLose",
 			"NormalTexture": ""
@@ -96,7 +101,7 @@
 			"Tint": [ 0, 0, 0, 0 ],
 			"Metallic": 0,
 			"Roughness": 0,
-			"AO": 10.0,
+			"AO": 1.0,
 			
 			"AlbedoTexture": "HouseAlbedo",
 			"NormalTexture": ""
@@ -107,7 +112,7 @@
 			"Tint": [ 0, 0, 0, 0 ],
 			"Metallic": 0,
 			"Roughness": 0,
-			"AO": 10.0,
+			"AO": 1.0,
 			
 			"AlbedoTexture": "EndWin",
 			"NormalTexture": ""
@@ -118,7 +123,7 @@
 			"Tint": [ 0, 0, 0, 0 ],
 			"Metallic": 0,
 			"Roughness": 0,
-			"AO": 10.0,
+			"AO": 1.0,
 			
 			"AlbedoTexture": "MapArrid3",
 			"NormalTexture": ""
@@ -140,9 +145,20 @@
 			"Tint": [ 0, 0, 0, 0 ],
 			"Metallic": 0,
 			"Roughness": 0,
-			"AO": 10.0,
+			"AO": 1.0,
 			
 			"AlbedoTexture": "CardTemplate",
+			"NormalTexture": ""
+		},
+		{
+			"Name": "SkyOrbMaterial",
+			
+			"Tint": [ 0, 0, 0, 0 ],
+			"Metallic": 1.0,
+			"Roughness": 0,
+			"AO": 20.0,
+			
+			"AlbedoTexture": "SkyOrbTex1",
 			"NormalTexture": ""
 		}
 	],
@@ -212,6 +228,16 @@
 			"Name": "CardTemplate",
 			"Type": "img",
 			"Filename": "textures/cards/Card_Template_002.png"
+		},
+		{
+			"Name": "SkyOrbMesh",
+			"Type": "mesh",
+			"Filename": "models/SkyOrbSunAndMoon.obj"
+		},
+		{
+			"Name": "SkyOrbTex1",
+			"Type": "img",
+			"Filename": "textures/skyorb/normal.png"
 		}
 	]
 }

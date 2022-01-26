@@ -32,7 +32,7 @@ void createObject(edl::ResourceSystem& system, edl::GameObject* object) {
     edl::Renderable& r = system.renderables.back();
     r.mvpHandle = edl::getStorageBufferIndex(system.transformBuffer);
     r.parent = object;
-    object->component = &r;
+    object->components.insert({ "Renderable", &r });
     object->setEnabled(false);
 }
 
@@ -47,6 +47,49 @@ void CardInventory::setup(edl::res::Toolchain& toolchain) {
     createObject(system, leftObject);
     createObject(system, selObject);
     createObject(system, rightObject);
+}
+
+void InteractionSystem::setup(edl::res::Toolchain& toolchain) {
+    CardSpawner& spawner = toolchain.getTool<CardSpawner>("CardSpawner");
+
+    for (int i = 0; i < MAX_NUM_CARDS; i++) {
+        Interactable& interactable = interactables[i];
+        interactable.min = MIN_AABB;
+        interactable.max = MAX_AABB;
+
+        spawner.cardHolders[i]->addComponent("Interactable", interactable);
+    }
+
+}
+
+static bool PRESS = false;
+
+void InteractionSystem::update(edl::res::Toolchain& toolchain, float delta) {
+    edl::Camera& camera = toolchain.getTool<edl::Camera>("Camera");
+
+
+    if (glfwGetKey(camera.window, GLFW_KEY_F) == GLFW_RELEASE) {
+        PRESS = false;
+        return;
+    }
+
+    if (PRESS || glfwGetKey(camera.window, GLFW_KEY_F) != GLFW_PRESS) return;
+    PRESS = true;
+
+    const glm::vec3& forward = camera.getForward();
+    const glm::vec3& position = camera.getPosition();
+
+    Ray ray = { position, glm::normalize(forward), INTERACT_RANGE };
+    float t = -1.0f;
+
+    for (int i = 0; i < MAX_NUM_CARDS; i++) {
+        if (interactables[i].collide(ray, t)) {
+            std::cout << "Interacted with card #" << i << " at range " << t << std::endl;
+            return;
+        }
+    }
+
+    std::cout << "Didn't interact with anything :(" << std::endl;
 }
 
 void CardSpawner::setup(edl::res::Toolchain& toolchain) {
@@ -83,7 +126,7 @@ void CardSpawner::spawnCard(edl::res::Toolchain& toolchain, const std::string& c
     //TODO: This
     //TEMP:
     edl::ResourceSystem& system = toolchain.getTool<edl::ResourceSystem>("system");
-    ((edl::Renderable*)holder.component)->model = edl::hashString("CardModel");
+    ((edl::Renderable*)holder.components.at("Renderable"))->model = edl::hashString("CardModel");
 
     spawnedCount++;
 }

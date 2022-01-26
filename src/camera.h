@@ -15,6 +15,13 @@ public:
     void setPos(float x, float y, float z);
     void setRot(float x, float y);
 
+    const glm::vec3& getForward() const {
+        return forward;
+    }
+    const glm::vec3& getPosition() const {
+        return pos;
+    }
+
     glm::vec3 getPos();
 
     glm::mat4 view;
