@@ -47,6 +47,13 @@
 			"Rotation": [ 0, 0, 0 ],
 			"Scale": [ 300, 300, 300 ],
 			"Model": "SkyOrbModel"
+		},
+		{
+			"Name": "Priest",
+			"Position": [ 10, 0, 10 ],
+			"Rotation": [ 0, 90, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Model": "PriestModel"
 		}
 	],
 	
@@ -80,6 +87,11 @@
 			"Name": "SkyOrbModel",
 			"Mesh": "SkyOrbMesh",
 			"Material": "SkyOrbMaterial"
+		},
+		{
+			"Name": "PriestModel",
+			"Mesh": "PriestMesh",
+			"Material": "PriestMaterial"
 		}
 	],
 	
@@ -160,6 +172,17 @@
 			
 			"AlbedoTexture": "SkyOrbTex1",
 			"NormalTexture": ""
+		},
+		{
+			"Name": "PriestMaterial",
+			
+			"Tint": [ 0, 0, 0, 0 ],
+			"Metallic": 1000.0,
+			"Roughness": 0,
+			"AO": 10.0,
+			
+			"AlbedoTexture": "Priest",
+			"NormalTexture": ""
 		}
 	],
 	
@@ -178,6 +201,11 @@
 			"Name": "HouseMesh",
 			"Type": "mesh",
 			"Filename": "models/house_001.obj"
+		},
+		{
+			"Name": "PriestMesh",
+			"Type": "mesh",
+			"Filename": "models/Priest.obj"
 		},
 		{
 			"Name": "HouseAlbedo",
@@ -217,7 +245,7 @@
 		{
 			"Name": "Farmer",
 			"Type": "img",
-			"Filename": "textures/Farmer.png"
+			"Filename": "textures/NPCs/Farmer.png"
 		},
 		{
 			"Name": "CardMesh",
@@ -227,7 +255,7 @@
 		{
 			"Name": "CardTemplate",
 			"Type": "img",
-			"Filename": "textures/cards/Card_Template_002.png"
+			"Filename": "textures/cards/Gold/Inflation.png"
 		},
 		{
 			"Name": "SkyOrbMesh",
@@ -238,6 +266,11 @@
 			"Name": "SkyOrbTex1",
 			"Type": "img",
 			"Filename": "textures/skyorb/normal.png"
+		},
+		{
+			"Name": "Priest",
+			"Type": "img",
+			"Filename": "textures/NPCs/Priest.png"
 		}
 	]
 }
