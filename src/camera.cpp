@@ -53,11 +53,11 @@ glm::vec3 Camera::getPos() {
 void Camera::update(float delta) {
     const float motion = 30.0f * delta * (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ? 3.0f : 1.0f);
 
-    float forward = glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS;
-    float back = glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS;
-    float left = glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS;
-    float right = glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS;
-    forward *= motion; back *= motion; left *= motion; right *= motion;
+    //float forward = glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS;
+    //float back = glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS;
+    //float left = glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS;
+    //float right = glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS;
+    //forward *= motion; back *= motion; left *= motion; right *= motion;
 
     bool state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1);
 
@@ -101,8 +101,8 @@ void Camera::update(float delta) {
     this->right = glm::normalize(glm::cross(this->forward, glm::vec3(0.0f, 1.0f, 0.0f)));
     this->up = glm::normalize(glm::cross(this->right, this->forward));
 
-    pos += this->forward * (forward - back);
-    pos += this->right * (right - left);
+    //pos += this->forward * (forward - back);
+    //pos += this->right * (right - left);
 
     view = glm::lookAt(pos, pos + this->forward, this->up); //Might need to use true up
 }

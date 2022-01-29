@@ -1,0 +1,108 @@
+{
+  "Variables": [
+    {
+      "Name": "AridityGlobal",
+      "DefaultValue": 10,
+      "Min": 0,
+      "Max": 10,
+      "MinExceedEvent": "LoseEvent",
+      "MaxExceedEvent": "LoseEvent"
+    },
+    {
+      "Name": "FoodFarmer",
+      "DefaultValue": 10,
+      "Min": 0,
+      "Max": 10,
+      "MinExceedEvent": "LoseEvent",
+      "MaxExceedEvent": "LoseEvent"
+    },
+    {
+      "Name": "GoldFarmer",
+      "DefaultValue": 10,
+      "Min": 0,
+      "Max": 10,
+      "MinExceedEvent": "LoseEvent",
+      "MaxExceedEvent": "LoseEvent"
+    },
+    {
+      "Name": "FaithPriest",
+      "DefaultValue": 10,
+      "Min": 0,
+      "Max": 10,
+      "MinExceedEvent": "LoseEvent",
+      "MaxExceedEvent": "LoseEvent"
+    },
+  ],
+
+  "Cards": [
+    {
+        "Name": "Temp1",
+		"Material": "temp1Material",
+        "DefaultEvent": "Temp1Default",
+        "EventMap": [
+            {
+				"Character": "Farmer", 
+				"Event": "Temp1Farmer" 
+			},
+            {
+				"Character": "Priest", 
+				"Event": "Temp1Priest" 
+			}
+        ]
+    }
+  ],
+
+  "Events": [
+     {
+        "Name": "Temp1Farmer",
+        "Effects": [
+			{
+				"Action": "Add",
+				"Character": "Farmer",
+				"Variable": "FoodFarmer",
+				"Min": 1,
+				"Max": 10
+			},
+			{
+				"Action": "Sub",
+				"Character": "Farmer",
+				"Variable": "GoldFarmer",
+				"Min": 1,
+				"Max": 10
+			}
+        ]
+      },
+      {
+        "Name": "Temp1Priest",
+        "Effects": [
+			{
+				"Action": "Add",
+				"Character": "Priest",
+				"Variable": "FaithPriest",
+				"Min": 1,
+				"Max": 10
+			}
+        ]
+      }
+  ],
+  
+  "GlobalVariables": [
+	"AridityGlobal"
+  ]
+  
+  "Characters": [
+	{
+		"Name": "Farmer",
+		"Variables": [
+			"FoodFarmer",
+			"GoldFarmer"
+		]
+	},
+	{
+		"Name": "Priest",
+		"Variables": [
+			"FaithPriest"
+		]
+	}
+  ]
+}

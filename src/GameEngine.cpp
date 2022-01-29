@@ -8,7 +8,7 @@ const float CARD_HOVER_MIN = 1.5f;
 const float CARD_HOVER_MAX = 2.5f;
 const float CARD_TILT_DEGREES = 70.0f;
 
-void updateCardAnimation(edl::GameObject* object, glm::vec3 pos, float time) {
+void updateCardAnimation(edl::GameObject* object, glm::vec3 pos, float time, float verticalScale = 1.0f) {
     assert(object != nullptr);
 
     float scaledRotation = glm::radians(360.0f * fmod(time, CARD_ROTATION_INTERVAL) / CARD_ROTATION_INTERVAL); // So it should make a full rotation every CARD_ROTATION_INTERVAL
@@ -19,6 +19,7 @@ void updateCardAnimation(edl::GameObject* object, glm::vec3 pos, float time) {
     float hoverInterval = glm::sin(glm::radians(360.0f * fmod(time, CARD_HOVER_INTERVAL) / CARD_HOVER_INTERVAL));
     float scaledHover = (hoverInterval + 1.0f) / 2.0f;
     scaledHover = scaledHover * (CARD_HOVER_MAX - CARD_HOVER_MIN) + CARD_HOVER_MIN;
+    scaledHover *= verticalScale;
 
     object->position = pos + glm::vec3(0, scaledHover, 0);
     object->rotation = rotation *tilt;
@@ -49,6 +50,116 @@ void CardInventory::setup(edl::res::Toolchain& toolchain) {
     createObject(system, rightObject);
 }
 
+void CardInventory::displayCard(edl::res::Toolchain& toolchain, edl::GameObject& o, int card, bool primary, bool left) {
+    edl::Camera& camera = toolchain.getTool<edl::Camera>("Camera");
+    edl::Renderable& r = (edl::Renderable&)o.getComponent("Renderable");
+
+    o.setEnabled(true);
+
+    glm::vec3 position(0);
+    if (primary) {
+        position = PRIMARY_OFFSET;
+    }
+    else if (left) {
+        position = LEFT_OFFSET;
+    }
+    else {
+        position = RIGHT_OFFSET;
+    }
+
+    glm::quat q = glm::quat(camera.getForward());
+    position = camera.getPosition() + camera.getForward() * position.z + camera.getUp() * position.y + camera.getRight() * position.x;
+    //o.position = position;
+
+    if (primary) {
+        o.scale = glm::vec3(PRIMARY_CARD_SCALE);
+    }
+    else {
+        o.scale = glm::vec3(SECONDARY_CARD_SCALE);
+    }
+
+    o.calculateTransform();
+
+    //TEMP
+    edl::ResourceSystem& system = toolchain.getTool<edl::ResourceSystem>("system");
+    ((edl::Renderable*)o.components.at("Renderable"))->model = edl::hashString("CardModel");
+
+    updateCardAnimation(&o, position, cardTime[card], primary ? PRIMARY_CARD_HOVER_SCALE : SECONDARY_CARD_HOVER_SCALE);
+}
+
+void CardInventory::update(edl::res::Toolchain& toolchain, float delta) {
+    edl::Camera& camera = toolchain.getTool<edl::Camera>("Camera");
+
+    static bool PRESS_Q = false;
+    if (glfwGetKey(camera.window, GLFW_KEY_Q) == GLFW_RELEASE) {
+        PRESS_Q = false;
+    }
+
+    if (glfwGetKey(camera.window, GLFW_KEY_Q) == GLFW_PRESS && !PRESS_Q) {
+        cycleLeft();
+        PRESS_Q = true;
+    }
+
+    static bool PRESS_E = false;
+    if (glfwGetKey(camera.window, GLFW_KEY_E) == GLFW_RELEASE) {
+        PRESS_E = false;
+    }
+
+    if (glfwGetKey(camera.window, GLFW_KEY_E) == GLFW_PRESS && !PRESS_E) {
+        cycleRight();
+        PRESS_E = true;
+    }
+
+    static bool PRESS_R = false;
+    if (glfwGetKey(camera.window, GLFW_KEY_R) == GLFW_RELEASE) {
+        PRESS_R = false;
+    }
+
+    if (glfwGetKey(camera.window, GLFW_KEY_R) == GLFW_PRESS && !PRESS_R) {
+        if (nextCard > 0) {
+            std::string name = dropCard();
+
+            CardSpawner& spawner = toolchain.getTool<CardSpawner>("CardSpawner");
+            PlayerMotion& motion = toolchain.getTool<PlayerMotion>("PlayerMotion");
+            spawner.spawnCard(toolchain, name, motion.getPosition());
+        }
+
+        PRESS_R = true;
+    }
+
+    if (nextCard > 0) {
+        // Animate it
+        for (int i = 0; i < nextCard; i++) {
+            //if (!active[i]) continue;
+
+            cardTime[i] += delta;
+        }
+
+        int leftCard = nextCard > 2 ? nextCard - 1 : 0;
+        int rightCard = nextCard > 1 ? 1 : 0;
+
+        displayCard(toolchain, *selObject, 0, true, false);
+
+        if (leftCard > 0) {
+            displayCard(toolchain, *leftObject, leftCard, false, true);
+        }
+        else {
+            leftObject->setEnabled(false);
+        }
+
+        if (rightCard > 0) {
+            displayCard(toolchain, *rightObject, rightCard, false, false);
+        }
+        else {
+            rightObject->setEnabled(false);
+        }
+    }
+    else {
+        selObject->setEnabled(false);
+    }
+
+}
+
 void InteractionSystem::setup(edl::res::Toolchain& toolchain) {
     CardSpawner& spawner = toolchain.getTool<CardSpawner>("CardSpawner");
 
@@ -62,12 +173,12 @@ void InteractionSystem::setup(edl::res::Toolchain& toolchain) {
 
 }
 
-static bool PRESS = false;
+
 
 void InteractionSystem::update(edl::res::Toolchain& toolchain, float delta) {
     edl::Camera& camera = toolchain.getTool<edl::Camera>("Camera");
 
-
+    static bool PRESS = false;
     if (glfwGetKey(camera.window, GLFW_KEY_F) == GLFW_RELEASE) {
         PRESS = false;
         return;
@@ -85,11 +196,18 @@ void InteractionSystem::update(edl::res::Toolchain& toolchain, float delta) {
     for (int i = 0; i < MAX_NUM_CARDS; i++) {
         if (interactables[i].collide(ray, t)) {
             std::cout << "Interacted with card #" << i << " at range " << t << std::endl;
-            return;
+
+            auto& inventory = toolchain.getTool<CardInventory>("CardInventory");
+            auto& spawner = toolchain.getTool<CardSpawner>("CardSpawner");
+            if (inventory.getCard(spawner.cardNames[i])) {
+                spawner.despawn(i);
+            }
+
+            break;
         }
     }
 
-    std::cout << "Didn't interact with anything :(" << std::endl;
+    //std::cout << "Didn't interact with anything :(" << std::endl;
 }
 
 void CardSpawner::setup(edl::res::Toolchain& toolchain) {
@@ -118,6 +236,7 @@ void CardSpawner::spawnCard(edl::res::Toolchain& toolchain, const std::string& c
 
     // Spawn it
     active[nextHolder] = true;
+    cardTime[nextHolder] = 0.0f;
     edl::GameObject& holder = *cardHolders[nextHolder];
     //holder.setEnabled(true);
     holder.scale = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -160,4 +279,67 @@ void CardSpawner::update(edl::res::Toolchain& toolchain, float delta) {
         updateCardAnimation(cardHolders[i], cardPosition[i], cardTime[i]);
     }
 
+}
+
+void PlayerMotion::setup(edl::res::Toolchain& toolchain) {
+
+}
+
+void PlayerMotion::update(edl::res::Toolchain& toolchain, float delta) {
+    auto& camera = toolchain.getTool<edl::Camera>("Camera");
+
+    static bool PRESS_SPACE = false;
+    if (glfwGetKey(camera.window, GLFW_KEY_SPACE) == GLFW_RELEASE) {
+        PRESS_SPACE = false;
+    }
+
+    if (glfwGetKey(camera.window, GLFW_KEY_SPACE) == GLFW_PRESS && !PRESS_SPACE) {
+        if (jumpheight == 0.0f) {
+            velocity = PLAYER_JUMP_FORCE;
+        }
+        PRESS_SPACE = true;
+    }
+
+    bool crouching = false;
+    bool sprinting = glfwGetKey(camera.window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS;
+    // Crouch
+    if (glfwGetKey(camera.window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+        anim -= delta * PLAYER_CROUCH_ANIM_SPEED;
+        crouching = true;
+        if (anim < 0.0f) anim = 0.0f;
+    }
+    else {
+        anim += delta * PLAYER_CROUCH_ANIM_SPEED;
+        if (anim >= 1.0f) anim = 1.0f;
+    }
+
+    if (velocity > 0.0f || jumpheight > 0.0f) {
+        velocity += GRAVITY_FORCE * delta;
+        jumpheight += velocity * delta;
+        if (jumpheight < 0.0f) {
+            jumpheight = 0.0f;
+            velocity = 0.0f;
+        }
+    }
+
+    float height = anim * (PLAYER_HEIGHT - PLAYER_CROUCH_HEIGHT) + PLAYER_CROUCH_HEIGHT + jumpheight + GROUND_Y;
+
+    float speed = crouching ? PLAYER_CROUCH_SPEED : PLAYER_MOVE_SPEED;
+    speed *= sprinting ? PLAYER_SPRINT_MULT : 1.0f;
+
+    float forward = glfwGetKey(camera.window, GLFW_KEY_W) == GLFW_PRESS;
+    float back = glfwGetKey(camera.window, GLFW_KEY_S) == GLFW_PRESS;
+    float left = glfwGetKey(camera.window, GLFW_KEY_A) == GLFW_PRESS;
+    float right = glfwGetKey(camera.window, GLFW_KEY_D) == GLFW_PRESS;
+    forward *= speed; back *= speed; left *= speed; right *= speed;
+
+    glm::vec3 forwdir = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), camera.getRight()));
+    
+    playerPosition += forwdir * (forward - back);
+    playerPosition += camera.getRight() * (right - left);
+    playerPosition.y = height;
+
+    camera.setPos(playerPosition.x, playerPosition.y, playerPosition.z);
+
+    camera.update(delta);
 }

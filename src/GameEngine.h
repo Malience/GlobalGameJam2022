@@ -15,6 +15,7 @@
 const float MAX_DAYLIGHT = 2.5f;
 const float MIN_DAYLIGHT = 0.01f;
 const float MAX_NIGHTLIGHT = 0.2f;
+const float TIME_DILATION = 0.2f;
 
 class TimeManager {
 public:
@@ -68,7 +69,7 @@ public:
 
 private:
     float time = 0.0f;
-    float timeDilation = 1.0f;
+    float timeDilation = TIME_DILATION;
     bool pause = false;
 
     edl::GameObject* skyOrb;
@@ -95,23 +96,93 @@ private:
     std::unordered_map<std::string, edl::GameObject*> elementMap;
 };
 
+const float PRIMARY_CARD_HOVER_SCALE = 0.02f;
+const float SECONDARY_CARD_HOVER_SCALE = 0.01f;
+const float PRIMARY_CARD_SCALE = 0.02f;
+const float SECONDARY_CARD_SCALE = 0.01f;
+const glm::vec3 PRIMARY_OFFSET = glm::vec3(0.12f, -0.1f, 0.3f);
+const glm::vec3 LEFT_OFFSET = glm::vec3(0.08f, -0.1f, 0.3f);
+const glm::vec3 RIGHT_OFFSET = glm::vec3(0.16f, -0.1f, 0.3f);
+
 class CardInventory {
 public:
     void setup(edl::res::Toolchain& toolchain);
 
+    void setCard(const std::string& card, int i) {
+        cardNames[i] = card;
+        cardTime[i] = 0;
+    }
+
+    bool getCard(const std::string& card) {
+        if (nextCard >= MAX_HAND_SIZE) return false;
+
+        setCard(card, nextCard);
+        nextCard++;
+
+        return true;
+    }
+
+    void swap(int x, int y) {
+        std::swap(cardNames[x], cardNames[y]);
+        std::swap(cardTime[x], cardTime[y]);
+    }
+
+    void cycleLeft() {
+        if (nextCard < 2) return;
+
+        if (nextCard == 2) {
+            swap(0, 1);
+        }
+        else {
+            for (int i = 0; i < nextCard - 1; i++) {
+                swap(i, nextCard - 1);
+            }
+        }
+    }
+
+    void cycleRight() {
+        if (nextCard < 2) return;
+
+        if (nextCard == 2) {
+            swap(0, 1);
+        }
+        else {
+            for (int i = 0; i < nextCard - 1; i++) {
+                swap(i, i + 1);
+            }
+        }
+    }
+
+    std::string dropCard() {
+        if (nextCard == 0) return "";
+        std::string name = cardNames[0];
+
+        cardNames[0] = "";
+        cardTime[0] = 0;
+
+        for (int i = 1; i < nextCard; i++) {
+            swap(i - 1, i);
+        }
+        nextCard--;
+
+        return name;
+    }
+
+    void displayCard(edl::res::Toolchain& toolchain, edl::GameObject& o, int card, bool primary, bool left);
+
     void update(edl::res::Toolchain& toolchain, float delta);
 
 private:
-    static const int MAX_NUM_CARDS = 5;
-    int selectedCard = 0;
-    std::string cardNames[MAX_NUM_CARDS];
-    bool active[MAX_NUM_CARDS];
-    float cardTime[MAX_NUM_CARDS];
+    static const int MAX_HAND_SIZE = 5;
+    std::string cardNames[MAX_HAND_SIZE];
+    float cardTime[MAX_HAND_SIZE];
+    int nextCard = 0;
 
     edl::GameObject* leftObject;
     edl::GameObject* selObject;
     edl::GameObject* rightObject;
 
+    friend class InteractionSystem;
 };
 
 const float MIN_SPAWN_TIME = 2.0f;
@@ -252,6 +323,32 @@ private:
     friend class InteractionSystem;
 };
 
+const float GRAVITY_FORCE = -80.0f;
+const float GROUND_Y = 0.0f;
+const float PLAYER_JUMP_FORCE = 30.0f;
+const float PLAYER_HEIGHT = 5.0f;
+const float PLAYER_CROUCH_HEIGHT = 2.0f;
+const float PLAYER_SPRINT_MULT = 1.5f;
+const float PLAYER_MOVE_SPEED = 0.7f;
+const float PLAYER_CROUCH_SPEED = 0.4f;
+const float PLAYER_CROUCH_ANIM_SPEED = 10.0f;
+
+class PlayerMotion {
+public:
+    void setup(edl::res::Toolchain& toolchain);
+    void update(edl::res::Toolchain& toolchain, float delta);
+
+    glm::vec3 getPosition() {
+        return glm::vec3(playerPosition.x, GROUND_Y, playerPosition.z);
+    }
+
+private:
+    float anim = 1.0f;
+    float jumpheight = 0.0f;
+    float velocity = 0.0f;
+    glm::vec3 playerPosition;
+};
+
 class GameEngine {
 public:
 
@@ -261,6 +358,8 @@ public:
         toolchain.add("TimeManager", &timeManager);
         toolchain.add("CardSpawner", &spawner);
         toolchain.add("InteractionSystem", &interactionSystem);
+        toolchain.add("CardInventory", &cardInventory);
+        toolchain.add("PlayerMotion", &playerMotion);
 
         edl::ObjectRegistry& registry = toolchain.getTool<edl::ObjectRegistry>("ObjectRegistry");
 
@@ -269,8 +368,10 @@ public:
             timeManager.setObject(&skyOrb);
         }
 
+        playerMotion.setup(toolchain);
         spawner.setup(toolchain);
         interactionSystem.setup(toolchain);
+        cardInventory.setup(toolchain);
     }
 
     void update(edl::res::Toolchain& toolchain, float delta) {
@@ -279,9 +380,11 @@ public:
         // Apply time dilation
         delta *= timeDilation;
 
+        playerMotion.update(toolchain, delta);
         timeManager.update(toolchain, delta);
         spawner.update(toolchain, delta);
         interactionSystem.update(toolchain, delta);
+        cardInventory.update(toolchain, delta);
     }
 
     void setTimeDilation(float dilation) { timeDilation = dilation; }
@@ -295,4 +398,6 @@ private:
     TimeManager timeManager;
     CardSpawner spawner;
     InteractionSystem interactionSystem;
+    CardInventory cardInventory;
+    PlayerMotion playerMotion;
 };
