@@ -108,8 +108,83 @@
 
   "Cards": [
     {
-        "Name": "Temp1",
-		"Material": "CardModel",
+        "Name": "Cornucopia",
+		"Material": "CornucopiaModel",
+        "DefaultEvent": "Temp1Default",
+        "EventMap": [
+            {
+				"Character": "Farmer", 
+				"Event": "Temp1Farmer" 
+			},
+            {
+				"Character": "Priest", 
+				"Event": "Temp1Priest" 
+			}
+        ]
+    },
+	{
+        "Name": "FoodMarket",
+		"Material": "FoodMarketModel",
+        "DefaultEvent": "Temp1Default",
+        "EventMap": [
+            {
+				"Character": "Farmer", 
+				"Event": "Temp1Farmer" 
+			},
+            {
+				"Character": "Priest", 
+				"Event": "Temp1Priest" 
+			}
+        ]
+    },
+	{
+        "Name": "SustenanceOffering",
+		"Material": "SustenanceOfferingModel",
+        "DefaultEvent": "Temp1Default",
+        "EventMap": [
+            {
+				"Character": "Farmer", 
+				"Event": "Temp1Farmer" 
+			},
+            {
+				"Character": "Priest", 
+				"Event": "Temp1Priest" 
+			}
+        ]
+    },
+	{
+        "Name": "Donation",
+		"Material": "DonationModel",
+        "DefaultEvent": "Temp1Default",
+        "EventMap": [
+            {
+				"Character": "Farmer", 
+				"Event": "Temp1Farmer" 
+			},
+            {
+				"Character": "Priest", 
+				"Event": "Temp1Priest" 
+			}
+        ]
+    },
+	{
+        "Name": "HiddenTreasure",
+		"Material": "HiddenTreasureModel",
+        "DefaultEvent": "Temp1Default",
+        "EventMap": [
+            {
+				"Character": "Farmer", 
+				"Event": "Temp1Farmer" 
+			},
+            {
+				"Character": "Priest", 
+				"Event": "Temp1Priest" 
+			}
+        ]
+    },
+	{
+        "Name": "Inflation",
+		"Material": "InflationModel",
         "DefaultEvent": "Temp1Default",
         "EventMap": [
             {
@@ -167,13 +242,27 @@
 		"Name": "Farmer",
 		"Variables": [
 			"FoodFarmer",
-			"GoldFarmer"
+			"GoldFarmer",
+			"FaithFarmer",
+			"WoodFarmer"
 		]
 	},
 	{
 		"Name": "Priest",
 		"Variables": [
-			"FaithPriest"
+			"FoodPriest",
+			"GoldPriest",
+			"FaithPriest",
+			"WoodPriest"
+		]
+	},
+	{
+		"Name": "Merchant",
+		"Variables": [
+			"FoodMerchant",
+			"GoldMerchant",
+			"FaithMerchant",
+			"WoodMerchant"
 		]
 	}
   ]

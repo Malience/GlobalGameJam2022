@@ -7,20 +7,6 @@
 	
 	"Objects": [
 		{
-			"Name": "Smoothy",
-			"Position": [ 0, 0, 0 ],
-			"Rotation": [ 0, 90, 0 ],
-			"Scale": [ 1, 1, 1 ],
-			"Model": "SmoothyModel"
-		},
-		{
-			"Name": "Chonky",
-			"Position": [ 0, 0, -10 ],
-			"Rotation": [ 0, -90, 0 ],
-			"Scale": [ 1, 1, 1 ],
-			"Model": "ChonkyModel"
-		},
-		{
 			"Name": "Housey",
 			"Position": [ -35, 0, -7.5 ],
 			"Rotation": [ 0, 90, 0 ],
@@ -35,13 +21,6 @@
 			"Model": "MapArridModel"
 		},
 		{
-			"Name": "CardTest",
-			"Position": [ 8, 0, 0 ],
-			"Rotation": [ 0, 90, 0 ],
-			"Scale": [ 1, 1, 1 ],
-			"Model": "CardModel"
-		},
-		{
 			"Name": "SkyOrb",
 			"Position": [ 0, 0, 0 ],
 			"Rotation": [ 0, 0, 0 ],
@@ -54,6 +33,20 @@
 			"Rotation": [ 0, 90, 0 ],
 			"Scale": [ 1, 1, 1 ],
 			"Model": "PriestModel"
+		},
+		{
+			"Name": "Farmer",
+			"Position": [ 10, 0, 0 ],
+			"Rotation": [ 0, 90, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Model": "FarmerModel"
+		},
+		{
+			"Name": "Merchant",
+			"Position": [ 10, 0, -10 ],
+			"Rotation": [ 0, 90, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Model": "MerchantModel"
 		}
 	],
 	
@@ -92,6 +85,46 @@
 			"Name": "PriestModel",
 			"Mesh": "PriestMesh",
 			"Material": "PriestMaterial"
+		},
+		{
+			"Name": "FarmerModel",
+			"Mesh": "ChonkyMesh",
+			"Material": "FarmerMaterial"
+		},
+		{
+			"Name": "MerchantModel",
+			"Mesh": "SmoothyMesh",
+			"Material": "EndWinMaterial"
+		},
+		{
+			"Name": "CornucopiaModel",
+			"Mesh": "CardMesh",
+			"Material": "CornucopiaMaterial"
+		},
+		{
+			"Name": "FoodMarketModel",
+			"Mesh": "CardMesh",
+			"Material": "FoodMarketMaterial"
+		},
+		{
+			"Name": "SustenanceOfferingModel",
+			"Mesh": "CardMesh",
+			"Material": "SustenanceOfferingMaterial"
+		},
+		{
+			"Name": "DonationModel",
+			"Mesh": "CardMesh",
+			"Material": "DonationMaterial"
+		},
+		{
+			"Name": "HiddenTreasureModel",
+			"Mesh": "CardMesh",
+			"Material": "HiddenTreasureMaterial"
+		},
+		{
+			"Name": "InflationModel",
+			"Mesh": "CardMesh",
+			"Material": "InflationMaterial"
 		}
 	],
 	
@@ -183,6 +216,72 @@
 			
 			"AlbedoTexture": "Priest",
 			"NormalTexture": ""
+		},
+		{
+			"Name": "CornucopiaMaterial",
+			
+			"Tint": [ 0, 0, 0, 0 ],
+			"Metallic": 0,
+			"Roughness": 0,
+			"AO": 1.0,
+			
+			"AlbedoTexture": "CornucopiaTex",
+			"NormalTexture": ""
+		},
+		{
+			"Name": "FoodMarketMaterial",
+			
+			"Tint": [ 0, 0, 0, 0 ],
+			"Metallic": 0,
+			"Roughness": 0,
+			"AO": 1.0,
+			
+			"AlbedoTexture": "FoodMarketTex",
+			"NormalTexture": ""
+		},
+		{
+			"Name": "SustenanceOfferingMaterial",
+			
+			"Tint": [ 0, 0, 0, 0 ],
+			"Metallic": 0,
+			"Roughness": 0,
+			"AO": 1.0,
+			
+			"AlbedoTexture": "SustenanceOfferingTex",
+			"NormalTexture": ""
+		},
+		{
+			"Name": "DonationMaterial",
+			
+			"Tint": [ 0, 0, 0, 0 ],
+			"Metallic": 0,
+			"Roughness": 0,
+			"AO": 1.0,
+			
+			"AlbedoTexture": "DonationTex",
+			"NormalTexture": ""
+		},
+		{
+			"Name": "HiddenTreasureMaterial",
+			
+			"Tint": [ 0, 0, 0, 0 ],
+			"Metallic": 0,
+			"Roughness": 0,
+			"AO": 1.0,
+			
+			"AlbedoTexture": "HiddenTreasureTex",
+			"NormalTexture": ""
+		},
+		{
+			"Name": "InflationMaterial",
+			
+			"Tint": [ 0, 0, 0, 0 ],
+			"Metallic": 0,
+			"Roughness": 0,
+			"AO": 1.0,
+			
+			"AlbedoTexture": "InflationTex",
+			"NormalTexture": ""
 		}
 	],
 	
@@ -271,6 +370,36 @@
 			"Name": "Priest",
 			"Type": "img",
 			"Filename": "textures/NPCs/Priest.png"
+		},
+		{
+			"Name": "CornucopiaTex",
+			"Type": "img",
+			"Filename": "textures/cards/Food/Cornucopia.png"
+		},
+		{
+			"Name": "FoodMarketTex",
+			"Type": "img",
+			"Filename": "textures/cards/Food/Food_Market.png"
+		},
+		{
+			"Name": "SustenanceOfferingTex",
+			"Type": "img",
+			"Filename": "textures/cards/Food/Sustenance_Offering.png"
+		},
+		{
+			"Name": "DonationTex",
+			"Type": "img",
+			"Filename": "textures/cards/Gold/card_gold_donations.png"
+		},
+		{
+			"Name": "HiddenTreasureTex",
+			"Type": "img",
+			"Filename": "textures/cards/Gold/card_gold_hidden_treasure.png"
+		},
+		{
+			"Name": "InflationTex",
+			"Type": "img",
+			"Filename": "textures/cards/Gold/Inflation.png"
 		},
 		{
 			"Name": "CardList",
