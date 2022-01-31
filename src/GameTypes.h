@@ -57,7 +57,7 @@ struct Variable {
 
 struct Character {
     std::string name;
-    std::unordered_map<std::string, Variable> variables;
+    std::vector<std::string> variables;
 };
 
 }

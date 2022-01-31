@@ -37,6 +37,70 @@ void createObject(edl::ResourceSystem& system, edl::GameObject* object) {
     object->setEnabled(false);
 }
 
+void CardSystem::update(edl::res::Toolchain& toolchain, float delta) {
+
+}
+
+
+void CardSystem::activate(std::string& card, std::string& character) {
+    if (cards.find(card) == cards.end()) {
+        std::cout << "Card not found: " << card << std::endl;
+        return;
+    }
+    auto& cardObject = cards.at(card);
+
+    std::string e = "";
+    if (cardObject.eventMap.find(character) == cardObject.eventMap.end()) {
+        e = cardObject.defaultEvent;
+    }
+    else {
+        e = cardObject.eventMap.at(character);
+    }
+    activateEvent(e, character);
+    
+}
+
+
+void CardSystem::activateEvent(std::string& e, std::string& character) {
+    if (e == "") return;
+    if (events.find(e) == events.end()) {
+        std::cout << "Event not found: " << e << std::endl;
+        return;
+    }
+
+    auto& eventObject = events.at(e);
+    for (auto& effect : eventObject.effects) {
+        if (effect.action == edl::EffectAction::SPECIAL) {
+            //TODO:
+            continue;
+        }
+
+        if (variables.find(effect.var) == variables.end()) {
+            std::cout << "Variable not found: " << effect.var << " on event: " << e << std::endl;
+            continue;
+        }
+        auto& var = variables.at(effect.var);
+        
+        float& value = variableValue.at(effect.var);
+        float preval = value;
+
+        float r = ((float(rand()) / float((RAND_MAX))) * (effect.max - effect.min) + effect.min);
+
+        if (effect.action == edl::EffectAction::ADD) {
+            value += r;
+        }
+        else if (effect.action == edl::EffectAction::SUB) {
+            value -= r;
+        }
+        else if (effect.action == edl::EffectAction::SET) {
+            value = r;
+        }
+
+        std::cout << "Variable: " << effect.var << " is updated from: " << preval << " to: " << value << std::endl;
+    }
+    
+}
+
 void CardInventory::setup(edl::res::Toolchain& toolchain) {
     edl::ResourceSystem& system = toolchain.getTool<edl::ResourceSystem>("system");
     edl::ObjectRegistry& registry = toolchain.getTool<edl::ObjectRegistry>("ObjectRegistry");
@@ -81,8 +145,8 @@ void CardInventory::displayCard(edl::res::Toolchain& toolchain, edl::GameObject&
     o.calculateTransform();
 
     //TEMP
-    edl::ResourceSystem& system = toolchain.getTool<edl::ResourceSystem>("system");
-    ((edl::Renderable*)o.components.at("Renderable"))->model = edl::hashString("CardModel");
+    auto& system = toolchain.getTool<CardSystem>("CardSystem");
+    ((edl::Renderable*)o.components.at("Renderable"))->model = edl::hashString(system.cards.at(cardNames[card]).material);
 
     updateCardAnimation(&o, position, cardTime[card], primary ? PRIMARY_CARD_HOVER_SCALE : SECONDARY_CARD_HOVER_SCALE);
 }
@@ -171,6 +235,28 @@ void InteractionSystem::setup(edl::res::Toolchain& toolchain) {
         spawner.cardHolders[i]->addComponent("Interactable", interactable);
     }
 
+
+    auto& registry = toolchain.getTool<edl::ObjectRegistry>("ObjectRegistry");
+    CardSystem& cardSystem = toolchain.getTool<CardSystem>("CardSystem");
+    charcount = 0;
+    for (auto& e : cardSystem.characters) {
+        Interactable& interactable = characters[charcount];
+        interactable.min = CHAR_MIN_AABB;
+        interactable.max = CHAR_MAX_AABB;
+
+        auto& name = e.first;
+
+        if (!registry.hasObject(name)) {
+            edl::log::debug("GameLoading", "Character not found with name: %s", name.c_str());
+        }
+        else {
+            registry.getObject(name).addComponent("Interactable", interactable);
+        }
+
+        charnames[charcount] = name;
+
+        charcount++;
+    }
 }
 
 
@@ -202,6 +288,23 @@ void InteractionSystem::update(edl::res::Toolchain& toolchain, float delta) {
             if (inventory.getCard(spawner.cardNames[i])) {
                 spawner.despawn(i);
             }
+
+            return;
+        }
+    }
+
+    auto& inventory = toolchain.getTool<CardInventory>("CardInventory");
+    if (!inventory.hasCard()) return;
+
+    for (int i = 0; i < charcount; i++) {
+        if (characters[i].collide(ray, t)) {
+
+            auto& cardSystem = toolchain.getTool<CardSystem>("CardSystem");
+            std::string card = inventory.dropCard();
+
+            std::cout << "Interacted with character: " << charnames[i] << " at range " << t << " with card " << card << std::endl;
+
+            cardSystem.activate(card, charnames[i]);
 
             break;
         }
@@ -244,8 +347,8 @@ void CardSpawner::spawnCard(edl::res::Toolchain& toolchain, const std::string& c
     // Determine the card and set model
     //TODO: This
     //TEMP:
-    edl::ResourceSystem& system = toolchain.getTool<edl::ResourceSystem>("system");
-    ((edl::Renderable*)holder.components.at("Renderable"))->model = edl::hashString("CardModel");
+    auto& system = toolchain.getTool<CardSystem>("CardSystem");
+    ((edl::Renderable*)holder.components.at("Renderable"))->model = edl::hashString(system.cards.at(cardName).material);
 
     spawnedCount++;
 }
@@ -268,7 +371,11 @@ void CardSpawner::update(edl::res::Toolchain& toolchain, float delta) {
         float z = (float(rand()) / float((RAND_MAX))) * (MAX_SPAWN_FIELD.y - MIN_SPAWN_FIELD.y) + MIN_SPAWN_FIELD.y;
         glm::vec3 pos = glm::vec3(x, 0, z);
 
-        spawnCard(toolchain, "", pos);
+        auto& cardSystem = toolchain.getTool<CardSystem>("CardSystem");
+
+        int index = rand() % cardSystem.cardnames.size();
+        
+        spawnCard(toolchain, cardSystem.cardnames[index], pos);
     }
 
     // Animate it

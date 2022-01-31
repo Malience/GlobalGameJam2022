@@ -86,7 +86,19 @@ private:
 };
 
 class CardSystem {
+public:
 
+    void update(edl::res::Toolchain& toolchain, float delta);
+    void activate(std::string& card, std::string& character);
+    void activateEvent(std::string& e, std::string& character);
+
+    std::unordered_map<std::string, float> variableValue;
+    std::unordered_map<std::string, edl::Variable> variables;
+    std::vector<std::string> cardnames;
+    std::unordered_map<std::string, edl::Card> cards;
+    std::unordered_map<std::string, edl::Event> events;
+    std::unordered_map<std::string, edl::Character> characters;
+    std::vector<std::string> globalVariables;;
 };
 
 class UISystem {
@@ -151,6 +163,10 @@ public:
                 swap(i, i + 1);
             }
         }
+    }
+
+    bool hasCard() {
+        return nextCard > 0;
     }
 
     std::string dropCard() {
@@ -251,8 +267,11 @@ public:
 };
 
 const int MAX_NUM_CARDS = 10;
+const int MAX_NUM_CHARS = 10;
 const glm::vec3 MIN_AABB = {-1.0f, -3.0f, -1.0f};
 const glm::vec3 MAX_AABB = {1.0f, 3.0f, 1.0f};
+const glm::vec3 CHAR_MIN_AABB = {-3.0f, -5.0f, -3.0f};
+const glm::vec3 CHAR_MAX_AABB = {3.0f, 5.0f, 3.0f};
 
 class InteractionSystem {
 public:
@@ -260,7 +279,10 @@ public:
     void update(edl::res::Toolchain& toolchain, float delta);
 
 private:
+    int charcount = 0;
     Interactable interactables[MAX_NUM_CARDS];
+    Interactable characters[MAX_NUM_CHARS];
+    std::string charnames[MAX_NUM_CHARS];
 };
 
 class CardSpawner {
@@ -352,6 +374,10 @@ private:
 class GameEngine {
 public:
 
+    void setupCardSystem(edl::res::Toolchain& toolchain) {
+        toolchain.add("CardSystem", &cardSystem);
+    }
+
     void setup(edl::res::Toolchain& toolchain) {
         // Add everything to the toolchain
         toolchain.add("GameEngine", this);
@@ -385,6 +411,7 @@ public:
         spawner.update(toolchain, delta);
         interactionSystem.update(toolchain, delta);
         cardInventory.update(toolchain, delta);
+        cardSystem.update(toolchain, delta);
     }
 
     void setTimeDilation(float dilation) { timeDilation = dilation; }
@@ -394,7 +421,7 @@ private:
     float timeDilation = 1.0f;
     bool pause = false;
 
-
+    CardSystem cardSystem;
     TimeManager timeManager;
     CardSpawner spawner;
     InteractionSystem interactionSystem;

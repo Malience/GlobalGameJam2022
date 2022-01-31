@@ -10,6 +10,7 @@
 #include "ShaderLoader.h"
 #include "IMGLoader.h"
 #include "MeshLoader.h"
+#include "CardLoader.h"
 
 #include "edl/glfw_lib.h"
 #include "edl/vk/vulkan.h"
@@ -126,6 +127,9 @@ void init(std::string applicationName) {
 	resourceSystem.registerLoadFunction("shader", edl::loadShader);
 	resourceSystem.registerLoadFunction("mesh", edl::loadMesh);
 	resourceSystem.registerLoadFunction("img", edl::loadIMG);
+	resourceSystem.registerLoadFunction("cardjson", edl::loadCardJSON);
+
+	resourceSystem.gameEngine.setupCardSystem(resourceSystem.toolchain);
 
 	resourceSystem.init(instance, &globalInfo);
 	resourceSystem.queue = instance.queues[0];

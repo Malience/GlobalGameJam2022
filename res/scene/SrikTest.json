@@ -271,6 +271,11 @@
 			"Name": "Priest",
 			"Type": "img",
 			"Filename": "textures/NPCs/Priest.png"
+		},
+		{
+			"Name": "CardList",
+			"Type": "cardjson",
+			"Filename": "scene/CardGame.json"
 		}
 	]
 }
