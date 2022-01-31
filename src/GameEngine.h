@@ -223,6 +223,7 @@ public:
     }
 
     bool collide(const Ray& ray, float& t) {
+        if (parent == nullptr) return false;
         if (!parent->getEnabled()) return false;
         if (ray.dir.x == 0.0f && ray.dir.y == 0.0f && ray.dir.z == 0.0f) return false;
 
