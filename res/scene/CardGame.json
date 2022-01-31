@@ -25,7 +25,79 @@
       "MaxExceedEvent": "LoseEvent"
     },
     {
+      "Name": "FaithFarmer",
+      "DefaultValue": 10,
+      "Min": 0,
+      "Max": 10,
+      "MinExceedEvent": "LoseEvent",
+      "MaxExceedEvent": "LoseEvent"
+    },
+    {
+      "Name": "WoodFarmer",
+      "DefaultValue": 10,
+      "Min": 0,
+      "Max": 10,
+      "MinExceedEvent": "LoseEvent",
+      "MaxExceedEvent": "LoseEvent"
+    },
+    {
+      "Name": "FoodMerchant",
+      "DefaultValue": 10,
+      "Min": 0,
+      "Max": 10,
+      "MinExceedEvent": "LoseEvent",
+      "MaxExceedEvent": "LoseEvent"
+    },
+    {
+      "Name": "GoldMerchant",
+      "DefaultValue": 10,
+      "Min": 0,
+      "Max": 10,
+      "MinExceedEvent": "LoseEvent",
+      "MaxExceedEvent": "LoseEvent"
+    },
+    {
+      "Name": "FaithMerchant",
+      "DefaultValue": 10,
+      "Min": 0,
+      "Max": 10,
+      "MinExceedEvent": "LoseEvent",
+      "MaxExceedEvent": "LoseEvent"
+    },
+    {
+      "Name": "WoodMerchant",
+      "DefaultValue": 10,
+      "Min": 0,
+      "Max": 10,
+      "MinExceedEvent": "LoseEvent",
+      "MaxExceedEvent": "LoseEvent"
+    },
+    {
+      "Name": "FoodPriest",
+      "DefaultValue": 10,
+      "Min": 0,
+      "Max": 10,
+      "MinExceedEvent": "LoseEvent",
+      "MaxExceedEvent": "LoseEvent"
+    },
+    {
+      "Name": "GoldPriest",
+      "DefaultValue": 10,
+      "Min": 0,
+      "Max": 10,
+      "MinExceedEvent": "LoseEvent",
+      "MaxExceedEvent": "LoseEvent"
+    },
+    {
       "Name": "FaithPriest",
+      "DefaultValue": 10,
+      "Min": 0,
+      "Max": 10,
+      "MinExceedEvent": "LoseEvent",
+      "MaxExceedEvent": "LoseEvent"
+    },
+    {
+      "Name": "WoodPriest",
       "DefaultValue": 10,
       "Min": 0,
       "Max": 10,
@@ -37,7 +109,7 @@
   "Cards": [
     {
         "Name": "Temp1",
-		"Material": "temp1Material",
+		"Material": "CardModel",
         "DefaultEvent": "Temp1Default",
         "EventMap": [
             {

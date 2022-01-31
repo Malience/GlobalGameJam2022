@@ -97,6 +97,13 @@ void CardSystem::activateEvent(std::string& e, std::string& character) {
         }
 
         std::cout << "Variable: " << effect.var << " is updated from: " << preval << " to: " << value << std::endl;
+
+        if (value <= var.min) {
+            activateEvent(var.minExceedEvent, character);
+        }
+        else if (value >= var.max) {
+            activateEvent(var.maxExceedEvent, character);
+        }
     }
     
 }
@@ -336,6 +343,7 @@ void CardSpawner::spawnCard(edl::res::Toolchain& toolchain, const std::string& c
     }
     
     cardPosition[nextHolder] = pos;
+    cardNames[nextHolder] = cardName;
 
     // Spawn it
     active[nextHolder] = true;
