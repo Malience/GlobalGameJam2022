@@ -13,7 +13,7 @@ void loadShader(res::Toolchain& toolchain, res::Resource& res) {
 
     //TODO: Make this actually do resource stuff
     //loadResourceFile(res, *system.allocator);
-    res::File file = res::loadFile(res.path, *system.allocator);
+    res::File file = res::loadFile(res.path.c_str(), *system.allocator);
 
     res::ResourceType verttype = hashString("vert");
     res::ResourceType fragtype = hashString("frag");

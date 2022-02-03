@@ -8,6 +8,7 @@
 namespace edl {
 
 void loadIMG(res::Toolchain& toolchain, res::Resource& res) {
+    std::cout << "-- Loading IMG: " << res.path << " START!" << std::endl;
     edl::ResourceSystem& system = toolchain.getTool<edl::ResourceSystem>("system");
 
     edl::res::allocateResourceData(res, sizeof(edl::res::Image), *system.allocator);
@@ -16,7 +17,9 @@ void loadIMG(res::Toolchain& toolchain, res::Resource& res) {
     int width, height, channels;
 
     //stbi_set_flip_vertically_on_load(1);
-    stbi_uc* data = stbi_load(res.path, &width, &height, &channels, 4);
+    std::cout << "--- Loading File: " << res.path << " START!" << std::endl;
+    stbi_uc* data = stbi_load(res.path.c_str(), &width, &height, &channels, 4);
+    std::cout << "--- Loading File: " << res.path << " END!" << std::endl;
 
     //std::cout << stbi_failure_reason() << std::endl;
 
@@ -32,6 +35,8 @@ void loadIMG(res::Toolchain& toolchain, res::Resource& res) {
 
     stbi_image_free(data);
     res.status = edl::res::ResourceStatus::LOADED;
+
+    std::cout << "-- Loading IMG: " << res.path << " END!" << std::endl;
 }
 
 }

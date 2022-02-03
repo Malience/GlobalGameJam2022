@@ -31,9 +31,6 @@
 #include <glm/ext/matrix_clip_space.hpp> // glm::perspective
 #include <glm/ext/scalar_constants.hpp> // glm::pi
 
-#define TINYOBJLOADER_IMPLEMENTATION
-#include "tiny_obj_loader.h"
-
 #include <iostream>
 #include <stdio.h>
 #include <vector>
@@ -101,7 +98,7 @@ void init(std::string applicationName) {
 
 	//Initialize Vulkan
 	instance.create(applicationName, engineName, layers, extensions);
-
+	
 	VkPhysicalDeviceDynamicRenderingFeaturesKHR f = {};
 	f.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR;
 	VkPhysicalDeviceFeatures2 f2 = {};
@@ -152,7 +149,7 @@ void init(std::string applicationName) {
 	}
 
 	globalInfo.num_back_buffers = globalInfo.swapchain_images.size();
-
+	
 	VkCommandBufferBeginInfo beginInfo = {};
 	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -177,9 +174,9 @@ void init(std::string applicationName) {
 	vkQueueSubmit(instance.queues[0], 1, &submitInfo, nullptr);
 	vkQueueWaitIdle(instance.queues[0]);
 	//commandBuffer.destroy();
-
+	
 	resourceSystem.loadScene(SCENE_FILE);
-
+	
 	//resourceSystem.update(0);
 
 	//resourceSystem.updateModels(0);
@@ -289,6 +286,7 @@ void init(std::string applicationName) {
 			frames = 0;
 		}
 	}
+	
 }
 
 void remakeCommandBuffer(VkCommandBuffer cb, uint32_t imageIndex) {

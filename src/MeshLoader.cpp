@@ -4,6 +4,7 @@
 
 #include "edl/logger.h"
 
+#define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
 #include <unordered_set>;
@@ -43,14 +44,16 @@ void loadMesh(res::Toolchain& toolchain, res::Resource& res) {
     edl::res::allocateResourceData(res, sizeof(Mesh), *system.allocator);
     Mesh& meshres = edl::res::getResourceData<Mesh>(res);
 
-    tinyobj::attrib_t attrib;
-    std::vector<tinyobj::shape_t> shapes;
-    std::vector<tinyobj::material_t> materials;
+    tinyobj::attrib_t attrib = {};
+    std::vector<tinyobj::shape_t> shapes = {};
+    std::vector<tinyobj::material_t> materials = {};
 
-    std::string warn;
-    std::string err;
+    std::string warn = "";
+    std::string err = "";
 
-    bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, res.path);
+    std::cout << "--- Loading File: " << res.path << " START!" << std::endl;
+    bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, res.path.c_str());
+    std::cout << "--- Loading File: " << res.path << " END!" << std::endl;
 
     if (!warn.empty()) {
         //log::warn("AssetLoading", warn);

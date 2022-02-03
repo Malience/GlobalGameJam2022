@@ -74,10 +74,12 @@ struct Resource {
     ResourceSubType subtype;
 
     uint64_t nameHash;
-    char* name;
+    //char* name;
+    std::string name;
 
     uint64_t filenameHash;
-    char* path;
+    //char* path;
+    std::string path;
 
     uint32_t dependenciesCount;
     ResourceID* dependencies;

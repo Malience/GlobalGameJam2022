@@ -77,6 +77,8 @@ void ResourceSystem::init(vk::Instance& instance, global_info* globalInfo) {
 }
 
 void ResourceSystem::loadScene(const std::string& filename) {
+    std::cout << "Loading Scene - " << filename << std::endl;
+
     std::string dir = "./res/scene/";
     std::vector<char> data;
     loadFile(dir + filename, data);
@@ -99,16 +101,19 @@ void ResourceSystem::loadScene(const std::string& filename) {
         }
     }
 
+    std::cout << "+ Loading Files" << std::endl;
     if (d.HasMember("Load")) {
         loadFiles(d["Load"].GetArray());
     }
 
     update(0);//TODO: Get rid of this
 
+    std::cout << "+ Loading Shader Reflection" << std::endl;
     if (d.HasMember("ShaderReflection")) {
         loadReflections(d["ShaderReflection"].GetArray());
     }
 
+    std::cout << "+ Loading Pipelines" << std::endl;
     if (d.HasMember("Pipelines")) {
         for (auto* ptr = d["Pipelines"].GetArray().Begin(); ptr != d["Pipelines"].GetArray().End(); ++ptr) {
             auto& pipeline = ptr->GetObject();
@@ -148,6 +153,7 @@ void ResourceSystem::loadScene(const std::string& filename) {
         }
     }
 
+    std::cout << "+ Loading DirLight" << std::endl;
     if (d.HasMember("DirLight")) {
         loadDirLight(d["DirLight"].GetObject());
     }
@@ -165,18 +171,18 @@ void ResourceSystem::loadScene(const std::string& filename) {
             loadModel(ptr->GetObject());
         }
     }
-
+    
     if (d.HasMember("Materials")) {
         auto& member = d["Materials"].GetArray();
         for (auto* ptr = member.Begin(); ptr != member.End(); ++ptr) {
             loadMaterial(ptr->GetObject());
         }
     }
-
+    
     if (d.HasMember("LoadLate")) {
         loadFiles(d["LoadLate"].GetArray());
     }
-
+    
     if (d.HasMember("Scenes")) {
         for (auto* ptr1 = d["Scenes"].GetArray().Begin(); ptr1 != d["Scenes"].GetArray().End(); ++ptr1) {
             loadScene(ptr1->GetString());
@@ -241,7 +247,9 @@ void ResourceSystem::loadFiles(const rapidjson::GenericArray<false, rapidjson::V
         //    loadFunction(*this, res);
         //}
         //else {
+        std::cout << "++ Loading File: " << res.name << " START!" << std::endl;
             requestResourceLoad(res.id);
+            std::cout << "++ Loading File: " << res.name << " END!" << std::endl;
         //}
     }
 }
@@ -610,7 +618,8 @@ res::Resource& ResourceSystem::createResource(std::string name, std::string file
 
     res.nameHash = nameHash;
     res.name = (char*)allocator->malloc(name.size());
-    strcpy(res.name, name.c_str());
+    //strcpy(res.name, name.c_str());
+    res.name = name;
 
     if (filename != "") {
         const char* dir = findDirectory(filename.c_str());
@@ -618,13 +627,14 @@ res::Resource& ResourceSystem::createResource(std::string name, std::string file
         size_t filenameSize = filename.size();
 
         res.filenameHash = hashString(filename);
-        res.path = (char*)allocator->malloc(dirSize + filenameSize);
-        strcpy(res.path, dir);
-        strcpy(res.path + dirSize, filename.c_str());
+        //res.path = (char*)allocator->malloc(dirSize + filenameSize);
+        res.path = dir + filename;
+        //strcpy(res.path, dir);
+        //strcpy(res.path + dirSize, filename.c_str());
     }
     else {
         res.filenameHash = 0;
-        res.path = 0;
+        res.path = "";
     }
 
     res.type = hashString(type);

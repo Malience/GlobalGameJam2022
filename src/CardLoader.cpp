@@ -124,6 +124,8 @@ void loadCardJSON(res::Toolchain& toolchain, res::Resource& res) {
     }
     assert(d.IsObject());
 
+    std::cout << "+++ Loading Card JSON - " << 1 << std::endl;
+
     if (d.HasMember("Variables")) {
         auto& member = d["Variables"].GetArray();
         for (auto* ptr = member.Begin(); ptr != member.End(); ++ptr) {
